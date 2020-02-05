@@ -1,0 +1,23 @@
+
+html,body,#app,.el-container {
+  margin: 0px;
+  height: 100%;
+}
+
+a, a:focus, a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.el-row {
+  margin-bottom: 10px;
+}
+
+/* .current-row>td {
+  background: #55d311 !important;
+} */
+
+.el-input--suffix .el-input__inner {
+  height: 50px !important;
+}
