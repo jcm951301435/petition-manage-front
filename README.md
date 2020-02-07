@@ -1,4 +1,4 @@
-# store-scan-web
+# petition-manage
 
 ## Project setup
 ```

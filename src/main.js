@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './plugins/element.js'
 import '@/styles/index.css'
+import '@/router/permission.js'
 
 import { mockXHR } from './mock'
 if (process.env.VUE_APP_USE_MOCK === 'true') {

@@ -1,4 +1,5 @@
-import { getToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login } from '@/api/login'
 
 const user = {
   namespaced: true,
@@ -13,20 +14,20 @@ const user = {
     }
   },
   actions: {
-    // user login
-    // login ({ commit }, userInfo) {
-    //   const { username, password } = userInfo
-    //   return new Promise((resolve, reject) => {
-    //     login({ username: username.trim(), password: password }).then(response => {
-    //       const { data } = response
-    //       commit('SET_TOKEN', data.token)
-    //       setToken(data.token)
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    login ({ commit }, userInfo) {
+      const username = userInfo.username.trim()
+      const password = userInfo.password
+      return new Promise((resolve, reject) => {
+        login(username, password).then(response => {
+          const { data } = response
+          commit('SET_TOKEN', data.token)
+          setToken(data.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
 
     // logout ({ commit, state, dispatch }) {
     //   return new Promise((resolve, reject) => {

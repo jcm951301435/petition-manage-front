@@ -18,6 +18,9 @@ export default new Router({
       meta: { title: '首页', icon: 'home' }
     }]
   }, {
+    path: '/login',
+    component: () => import('@/views/login')
+  }, {
     path: '/store',
     name: 'store',
     component: Main,
