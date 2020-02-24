@@ -72,7 +72,7 @@
     >
       <el-form :model="userEdit" :rules="rules" ref="userEditForm" label-width="150px" size="small">
         <el-form-item label="用户名：" prop="username">
-          <el-input v-model="userEdit.username" style="width: 250px" autocomplete="off" />
+          <el-input v-model="userEdit.username" :disabled="isEdit" style="width: 250px" autocomplete="off" />
         </el-form-item>
         <el-form-item label="姓名：" prop="realName">
           <el-input v-model="userEdit.realName" style="width: 250px" autocomplete="off" />
@@ -88,7 +88,7 @@
             <el-input v-model="userEdit.oldPassword" type="password" style="width: 250px" autocomplete="off" />
           </el-form-item>
           <el-form-item v-show="showPassword" label="密码：" prop="password">
-            <el-input v-model="userEdit.password" type="password" style="width: 250px" autocomplete="off" />
+            <el-input v-model="userEdit.password" type="password" style="width: 250px" autocomplete="off" auto-complete="new-password" />
           </el-form-item>
           <el-form-item v-show="showCheckPassword" label="确认密码：" prop="checkPassword">
             <el-input v-model="userEdit.checkPassword" type="password" style="width: 250px" autocomplete="off" />
@@ -97,7 +97,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="userEditDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleuserEditDialogConfirm()" size="small">确 定</el-button>
+        <el-button type="primary" @click="handleUserEditDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -248,7 +248,7 @@ export default {
         insertOnTo = insertOnRange[1]
       }
       if (username) {
-        paramsTrans.username = paramsTrans
+        paramsTrans.username = username
       }
       if (realName) {
         paramsTrans.realName = realName
@@ -304,15 +304,29 @@ export default {
     },
     handlerUserEditDialogOpen () {
       // this.$refs.userEditForm.resetFields()
-      console.log(this.$refs)
+      // console.log(this.$refs)
     },
-    handleuserEditDialogConfirm () {
+    handleUserEditDialogConfirm () {
       this.$refs.userEditForm.validate((valid) => {
         if (valid) {
           if (this.isEdit) {
-
+            userApi.updateUser(this.userEdit).then(response => {
+              this.$message({
+                message: response.data,
+                type: 'success'
+              })
+              this.userEditDialogVisible = false
+              this.getUserList()
+            })
           } else {
-            
+            userApi.createUser(this.userEdit).then(response => {
+              this.$message({
+                message: response.data,
+                type: 'success'
+              })
+              this.userEditDialogVisible = false
+              this.getUserList()
+            })
           }
         } else {
           return false

@@ -34,9 +34,18 @@ export function createUser (data) {
   })
 }
 
+export function updateUser (data) {
+  return request({
+    url: '/sysUser/update',
+    method: 'post',
+    data: data
+  })
+}
+
 export default {
   login,
   logout,
   fetchList,
-  createUser
+  createUser,
+  updateUser
 }
