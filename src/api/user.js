@@ -26,7 +26,7 @@ export function fetchList (params) {
   })
 }
 
-export function createUser (data) {
+export function create (data) {
   return request({
     url: '/sysUser/create',
     method: 'post',
@@ -34,7 +34,7 @@ export function createUser (data) {
   })
 }
 
-export function updateUser (data) {
+export function update (data) {
   return request({
     url: '/sysUser/update',
     method: 'post',
@@ -42,10 +42,18 @@ export function updateUser (data) {
   })
 }
 
+export function remove (id) {
+  return request({
+    url: '/sysUser/delete/' + id,
+    method: 'post'
+  })
+}
+
 export default {
   login,
   logout,
   fetchList,
-  createUser,
-  updateUser
+  create,
+  update,
+  remove
 }

@@ -44,7 +44,7 @@
         <el-table-column prop="realName" label="姓名" width="160" />
         <el-table-column prop="roleName" label="角色" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
-        <el-table-column prop="insertByUsername" label="创建人" width="160" />
+        <el-table-column prop="insertByName" label="创建人" width="160" />
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button @click="handleUpdate(scope.$index, scope.row)" type="text" size="small">
@@ -104,7 +104,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import userApi from '@/api/user'
 
 const defaultQueryParams = {
@@ -265,14 +264,11 @@ export default {
     }
   },
   created () {
-    this.getUserList()
+    this.getList()
   },
   methods: {
-    ...mapActions([
-      'user/fetchList'
-    ]),
     handleSearchList () {
-      this.getUserList()
+      this.getList()
     },
     handleResetSearch () {
 
@@ -282,19 +278,19 @@ export default {
       this.isEdit = true
       this.userEdit = Object.assign({}, row)
     },
-    handleDelete () {
+    handleDelete (index, row) {
       this.$confirm('是否要删除此人员?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // deleteFlash(row.id).then(response => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   });
-        //   this.getList();
-        // });
+        userApi.remove(row.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getList()
+        })
       })
     },
     handleAdd () {
@@ -310,22 +306,22 @@ export default {
       this.$refs.userEditForm.validate((valid) => {
         if (valid) {
           if (this.isEdit) {
-            userApi.updateUser(this.userEdit).then(response => {
+            userApi.update(this.userEdit).then(response => {
               this.$message({
                 message: response.data,
                 type: 'success'
               })
               this.userEditDialogVisible = false
-              this.getUserList()
+              this.getList()
             })
           } else {
-            userApi.createUser(this.userEdit).then(response => {
+            userApi.create(this.userEdit).then(response => {
               this.$message({
                 message: response.data,
                 type: 'success'
               })
               this.userEditDialogVisible = false
-              this.getUserList()
+              this.getList()
             })
           }
         } else {
@@ -333,7 +329,7 @@ export default {
         }
       })
     },
-    getUserList () {
+    getList () {
       this.listLoading = true
       userApi.fetchList(this.queryParamsTrans).then((response) => {
         this.listLoading = false
@@ -347,7 +343,7 @@ export default {
     },
     handlePageCurrentChange (val) {
       this.queryParams.pageNum = val
-      this.getUserList()
+      this.getList()
     }
   }
 }
