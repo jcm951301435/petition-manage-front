@@ -1,16 +1,29 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login } from '@/api/login'
+import { getUserInfo, setUserInfo } from '@/utils/auth'
+import userApi from '@/api/user'
+import { isNotEmpty } from '@/utils/object'
 
 const user = {
   namespaced: true,
   state: {
-    token: getToken()
+    userInfo: getUserInfo(),
+    roles: []
   },
   getters: {
+    hasUserInfo: state => {
+      return state.userInfo && isNotEmpty(state.userInfo)
+    }
   },
   mutations: {
-    SET_TOKEN: (state, token) => {
-      state.token = token
+    SET_USERINFO: (state, userInfo) => {
+      state.userInfo = userInfo
+      setUserInfo(userInfo)
+    },
+    REMOVE_USERINFO: (state) => {
+      state.userInfo = {}
+      setUserInfo({})
+    },
+    SET_ROLES: (state, roles) => {
+      state.roles = roles
     }
   },
   actions: {
@@ -18,10 +31,10 @@ const user = {
       const username = userInfo.username.trim()
       const password = userInfo.password
       return new Promise((resolve, reject) => {
-        login(username, password).then(response => {
+        userApi.login(username, password).then(response => {
           const { data } = response
-          commit('SET_TOKEN', data.token)
-          setToken(data.token)
+          const userInfo = { username: data }
+          commit('SET_USERINFO', userInfo)
           resolve()
         }).catch(error => {
           reject(error)
@@ -29,24 +42,20 @@ const user = {
       })
     },
 
-    // logout ({ commit, state, dispatch }) {
-    //   return new Promise((resolve, reject) => {
-    //     logout(state.token).then(() => {
-    //       commit('SET_TOKEN', '')
-    //       commit('SET_ROLES', [])
-    //       removeToken()
-    //       resetRouter()
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    logout ({ commit, state, dispatch }) {
+      return new Promise((resolve, reject) => {
+        userApi.logout().then(() => {
+          commit('REMOVE_USERINFO')
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
 
-    resetToken ({ commit }) {
+    frontLogOut ({ commit }) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', '')
-        removeToken()
+        commit('REMOVE_USERINFO')
         resolve()
       })
     }

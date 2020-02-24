@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -14,9 +13,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    if (store.getters.token) {
-      config.headers['Authorization'] = getToken()
-    }
     return config
   },
   error => {
@@ -43,15 +39,8 @@ service.interceptors.response.use(
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 401 || res.code === 403 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+        store.dispatch('user/frontLogOut').then(() => {
+          location.reload()
         })
       }
       return Promise.reject(new Error(res.message || 'Error'))

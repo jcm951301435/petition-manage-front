@@ -1,15 +1,16 @@
 import Cookies from 'js-cookie'
+import { toObj } from './object'
 
-const TokenKey = 'loginToken'
+const UserInfoKey = 'PETITION_USER_INFO'
 
-export function getToken () {
-  return Cookies.get(TokenKey)
+export function getUserInfo () {
+  return toObj(Cookies.get(UserInfoKey))
 }
 
-export function setToken (token) {
-  return Cookies.set(TokenKey, token)
+export function setUserInfo (token) {
+  return Cookies.set(UserInfoKey, token)
 }
 
-export function removeToken () {
-  return Cookies.remove(TokenKey)
+export function removeUserInfo () {
+  return Cookies.remove(UserInfoKey)
 }

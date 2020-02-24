@@ -9,7 +9,14 @@ module.exports = {
   ],
   rules: {
     'no-console': 'off',
-    'no-debugger': 'off'
+    'no-debugger': 'off',
+    "vue/max-attributes-per-line": [2, {
+      "singleline": 5,
+      "multiline": {
+        "max": 5,
+        "allowFirstLine": true
+      }
+    }],
   },
   parserOptions: {
     parser: 'babel-eslint'

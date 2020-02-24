@@ -1,42 +1,17 @@
 <template>
   <el-card class="login-form-layout">
-    <el-form
-      :model="loginForm"
-      status-icon
-      :rules="rules"
-      ref="loginForm"
-    >
+    <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm">
       <h2 class="login-title">
         拾山远
       </h2>
-      <el-form-item
-        prop="username"
-      >
-        <el-input
-          v-model="loginForm.username"
-          placeholder="请输入用户名"
-          autocomplete="off"
-          prefix-icon="el-icon-user-solid"
-        />
+      <el-form-item prop="username">
+        <el-input v-model="loginForm.username" placeholder="请输入用户名" autocomplete="off" prefix-icon="el-icon-user-solid" />
       </el-form-item>
-      <el-form-item
-        prop="password"
-      >
-        <el-input
-          type="password"
-          placeholder="请输入密码"
-          v-model="loginForm.password"
-          autocomplete="off"
-          prefix-icon="el-icon-lock"
-        />
+      <el-form-item prop="password">
+        <el-input type="password" placeholder="请输入密码" v-model="loginForm.password" autocomplete="off" prefix-icon="el-icon-lock" />
       </el-form-item>
       <el-form-item>
-        <el-button
-          :loading="loading"
-          style="width: 100%"
-          type="primary"
-          @click="handleLogin()"
-        >
+        <el-button :loading="loading" style="width: 100%" type="primary" @click="handleLogin()">
           登录
         </el-button>
       </el-form-item>
@@ -96,6 +71,7 @@ export default {
           this.loading = true
           this['user/login'](this.loginForm).then(() => {
             this.loading = false
+            this.$router.push({ path: '/' })
           }).catch(() => {
             this.loading = false
           })
