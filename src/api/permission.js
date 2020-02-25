@@ -8,6 +8,13 @@ export function fetchList (params) {
   })
 }
 
+export function rolePermissionList (id) {
+  return request({
+    url: '/sysPermission/rolePermissionList/' + id,
+    method: 'post'
+  })
+}
+
 export function create (data) {
   return request({
     url: '/sysPermission/create',
@@ -31,9 +38,19 @@ export function remove (id) {
   })
 }
 
+export function roleAddPermissions (data) {
+  return request({
+    url: '/sysPermission/roleAddPermissions',
+    method: 'post',
+    data: data
+  })
+}
+
 export default {
   fetchList,
   create,
   update,
-  remove
+  remove,
+  rolePermissionList,
+  roleAddPermissions
 }

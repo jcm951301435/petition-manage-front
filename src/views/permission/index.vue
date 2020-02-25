@@ -41,15 +41,15 @@
         <!-- <el-table-column prop="type" label="类型" width="160" /> -->
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="160" align="center">
+        <el-table-column label="操作" width="250" align="center">
           <template slot-scope="scope">
-            <el-button @click="handleAddChild(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleAddChild(scope.$index, scope.row)" type="primary" size="small">
               添加下级
             </el-button>
-            <el-button @click="handleUpdate(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
-            <el-button @click="handleDelete(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
               删除
             </el-button>
           </template>

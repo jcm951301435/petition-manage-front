@@ -45,12 +45,12 @@
         <el-table-column prop="roleName" label="角色" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="handleUpdate(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
-            <el-button @click="handleDelete(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
               删除
             </el-button>
           </template>
@@ -77,8 +77,11 @@
         <el-form-item label="姓名：" prop="realName">
           <el-input v-model="userEdit.realName" style="width: 250px" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="角色：" prop="roleName">
-          <el-input v-model="userEdit.roleName" style="width: 250px" autocomplete="off" />
+        <el-form-item label="角色：" prop="roleId">
+          <!-- <el-input v-model="userEdit.roleName" style="width: 250px" autocomplete="off" /> -->
+          <el-select v-model="userEdit.roleId" placeholder="请选择">
+            <el-option v-for="item in roleIdOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
         </el-form-item>
         <el-form-item v-show="showEditPassword" label="修改密码">
           <el-switch v-model="editPassword" />
@@ -105,6 +108,7 @@
 
 <script>
 import userApi from '@/api/user'
+import roleApi from '@/api/role'
 
 const defaultQueryParams = {
   username: '',
@@ -189,6 +193,7 @@ export default {
       userEditDialogVisible: false,
       isEdit: false,
       editPassword: false,
+      roleIdOptions: [],
       rules: {
         username: [{
           validator: validateUsername,
@@ -265,6 +270,7 @@ export default {
   },
   created () {
     this.getList()
+    this.getRoleIdOptions()
   },
   methods: {
     handleSearchList () {
@@ -339,6 +345,11 @@ export default {
         this.listTotal = total
       }).catch(() => {
         this.listLoading = false
+      })
+    },
+    getRoleIdOptions () {
+      roleApi.fetchList().then(response => {
+        this.roleIdOptions = response.data.list
       })
     },
     handlePageCurrentChange (val) {

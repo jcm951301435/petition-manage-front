@@ -14,7 +14,7 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="角色名：">
-            <el-input v-model="queryParams.username" class="input-width" placeholder="用户名" />
+            <el-input v-model="queryParams.name" class="input-width" placeholder="用户名" />
           </el-form-item>
         </el-form>
       </div>
@@ -28,21 +28,23 @@
     </el-card>
     <div class="table-container">
       <el-table :data="list" border stripe highlight-current-row v-loading="listLoading"
-                style="width: 100%" ref="userTable" row-key="id"
+                style="width: 100%" ref="roleTable" row-key="id"
       >
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
-        <el-table-column prop="username" label="用户名" width="150" />
-        <el-table-column prop="realName" label="姓名" width="160" />
-        <el-table-column prop="roleName" label="角色" width="160" />
+        <el-table-column prop="name" label="角色名" width="150" />
+        <el-table-column prop="description" label="描述" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
-        <el-table-column prop="insertByUsername" label="创建人" width="160" />
-        <el-table-column label="操作" width="100">
+        <el-table-column prop="insertByName" label="创建人" width="160" />
+        <el-table-column label="操作" width="250">
           <template slot-scope="scope">
-            <el-button @click="handleUpdate(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handlePemissionRelation(scope.$index, scope.row)" type="primary" size="small">
+              授权菜单
+            </el-button>
+            <el-button @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
-            <el-button @click="handleDelete(scope.$index, scope.row)" type="text" size="small">
+            <el-button @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
               删除
             </el-button>
           </template>
@@ -59,265 +61,164 @@
         @current-change="handlePageCurrentChange"
       />
     </div>
-    <el-dialog :title="isEdit ? '修改用户' : '添加用户'" :visible.sync="userEditDialogVisible" :close-on-click-modal="false"
-               width="40%" @open="handlerUserEditDialogOpen"
+    <el-dialog :title="isEdit ? '修改用户' : '添加用户'" :visible.sync="roleEditDialogVisible" :close-on-click-modal="false"
+               width="40%" @open="handlerRoleEditDialogOpen"
     >
-      <el-form :model="userEdit" :rules="rules" ref="userEditForm" label-width="150px" size="small">
-        <el-form-item label="用户名：" prop="username">
-          <el-input v-model="userEdit.username" :disabled="isEdit" style="width: 250px" autocomplete="off" />
+      <el-form :model="roleEdit" :rules="rules" ref="roleEditForm" label-width="150px" size="small">
+        <el-form-item label="角色名：" prop="name">
+          <el-input v-model="roleEdit.name" style="width: 250px" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="姓名：" prop="realName">
-          <el-input v-model="userEdit.realName" style="width: 250px" autocomplete="off" />
+        <el-form-item label="描述：" prop="description">
+          <el-input v-model="roleEdit.description" style="width: 250px" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="角色：" prop="roleName">
-          <el-input v-model="userEdit.roleName" style="width: 250px" autocomplete="off" />
-        </el-form-item>
-        <el-form-item v-show="showEditPassword" label="修改密码">
-          <el-switch v-model="editPassword" />
-        </el-form-item>
-        <div class="block">
-          <el-form-item v-show="showOldPassword" label="原密码：" prop="oldPassword">
-            <el-input v-model="userEdit.oldPassword" type="password" style="width: 250px" autocomplete="off" />
-          </el-form-item>
-          <el-form-item v-show="showPassword" label="密码：" prop="password">
-            <el-input v-model="userEdit.password" type="password" style="width: 250px" autocomplete="off" auto-complete="new-password" />
-          </el-form-item>
-          <el-form-item v-show="showCheckPassword" label="确认密码：" prop="checkPassword">
-            <el-input v-model="userEdit.checkPassword" type="password" style="width: 250px" autocomplete="off" />
-          </el-form-item>
-        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="userEditDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleUserEditDialogConfirm()" size="small">确 定</el-button>
+        <el-button @click="roleEditDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handleRoleEditDialogConfirm()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog v-loading="pemissionListLoading" :title="'授权菜单'" :visible.sync="pemissionDialogVisible" :close-on-click-modal="false"
+               width="40%"
+    >
+      <el-tree :props="pemissionProps" :data="pemissionList" node-key="id"
+               show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="pemissionDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handlePemissionDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import userApi from '@/api/user'
+import roleApi from '@/api/role'
+import permissionApi from '@/api/permission'
 
 const defaultQueryParams = {
-  username: '',
-  realName: '',
-  insertOnRange: ['', ''],
+  name: '',
   pageObj: {
     pageNum: 1,
     pageSize: 10
   }
 }
-const defaultUserEdit = {
+const defaultRoleEdit = {
   id: '',
-  username: '',
-  realName: '',
-  roleId: '',
-  roleName: '',
-  oldPassword: '',
-  password: '',
-  checkPassword: ''
+  name: '',
+  description: ''
 }
 
 export default {
   components: {
   },
   data () {
-    const validateUsername = (rule, value, callback) => {
-      if (value) {
-        callback()
-      } else {
-        callback(new Error('请输入用户名'))
-      }
-    }
-    const validateRealName = (rule, value, callback) => {
-      if (value) {
-        callback()
-      } else {
-        callback(new Error('请输入姓名'))
-      }
-    }
-    const validateRoleId = (rule, value, callback) => {
-      if (value) {
-        callback()
-      } else {
-        callback(new Error('请选择角色'))
-      }
-    }
-    const validateOldPassword = (rule, value, callback) => {
-      if (this.showOldPassword && !value) {
-        callback(new Error('请输入原密码'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (this.showPassword && !value) {
-        callback(new Error('请输入密码'))
-      } else {
-        callback()
-      }
-    }
-    const validateCheckPassword = (rule, value, callback) => {
-      if (this.showCheckPassword) {
-        if (value) {
-          if (value !== this.userEdit.password) {
-            callback(new Error('俩次输入密码不一致'))
-          } else {
-            callback()
-          }
-        } else {
-          callback(new Error('请再次输入密码'))
-        }
-      } else {
-        callback()
-      }
-    }
     return {
       queryParams: Object.assign({}, defaultQueryParams),
-      userEdit: Object.assign({}, defaultUserEdit),
+      roleEdit: Object.assign({}, defaultRoleEdit),
       listLoading: false,
       list: [],
       listTotal: null,
-      userEditDialogVisible: false,
+      roleEditDialogVisible: false,
       isEdit: false,
       editPassword: false,
       rules: {
-        username: [{
-          validator: validateUsername,
-          trigger: 'blur'
-        }],
-        realName: [{
-          validator: validateRealName,
-          trigger: 'blur'
-        }],
-        roleId: [{
-          validator: validateRoleId,
-          trigger: 'blur'
-        }],
-        oldPassword: [{
-          validator: validateOldPassword,
-          trigger: 'blur'
-        }],
-        password: [{
-          validator: validatePassword,
-          trigger: 'blur'
-        }],
-        checkPassword: [{
-          validator: validateCheckPassword,
-          trigger: 'blur'
-        }]
-      }
+        name: { required: true, message: '请输入角色名称', trigger: 'blur' }
+      },
+      pemissionProps: {
+        label: 'name',
+        children: 'childList'
+      },
+      roleIdSelect: null,
+      pemissionListLoading: false,
+      pemissionList: [],
+      pemissionCheckId: [6770880564774830087],
+      pemissionDialogVisible: false
     }
   },
   computed: {
     routerKey () {
       return this.$route.path
     },
-    showEditPassword () {
-      /** 仅修改时显示 */
-      return this.isEdit
-    },
-    showOldPassword () {
-      /** 仅修改 且 需要修改密码 */
-      return this.isEdit && this.editPassword
-    },
-    showPassword () {
-      /** 1.修改 且 需要修改密码 2.新增 */
-      return this.editPassword || !this.isEdit
-    },
-    showCheckPassword () {
-      /** 1.修改 且 需要修改密码 2.新增 */
-      return this.editPassword || !this.isEdit
-    },
     queryParamsTrans () {
       const paramsTrans = {}
-      const { username, realName, insertOnRange, pageObj } = this.queryParams
-      var insertOnFrom = ''
-      var insertOnTo = ''
-      if (insertOnRange) {
-        insertOnFrom = insertOnRange[0]
-        insertOnTo = insertOnRange[1]
-      }
-      if (username) {
-        paramsTrans.username = username
-      }
-      if (realName) {
-        paramsTrans.realName = realName
-      }
-      if (insertOnFrom) {
-        paramsTrans.insertOnFrom = insertOnFrom
-      }
-      if (insertOnTo) {
-        paramsTrans.insertOnTo = insertOnTo
+      const { name, pageObj } = this.queryParams
+      if (name) {
+        paramsTrans.name = name
       }
       paramsTrans.pageNum = pageObj.pageNum
       paramsTrans.pageSize = pageObj.pageSize
-      return paramsTrans
+      return this.queryParams
     }
   },
   created () {
-    this.getUserList()
+    this.getList()
   },
   methods: {
-    ...mapActions([
-      'user/fetchList'
-    ]),
     handleSearchList () {
-      this.getUserList()
+      this.getList()
     },
     handleResetSearch () {
 
     },
-    handleUpdate (index, row) {
-      this.userEditDialogVisible = true
-      this.isEdit = true
-      this.userEdit = Object.assign({}, row)
+    handlePemissionRelation (index, row) {
+      this.pemissionDialogVisible = true
+      this.pemissionCheckId = []
+      this.roleIdSelect = row.id
+      permissionApi.rolePermissionList(row.id).then((response) => {
+        const data = response.data
+        this.pemissionList = data.allList
+        this.pemissionCheckId = data.checkId
+      })
     },
-    handleDelete () {
+    handleUpdate (index, row) {
+      this.roleEditDialogVisible = true
+      this.isEdit = true
+      this.roleEdit = Object.assign({}, row)
+    },
+    handleDelete (index, row) {
       this.$confirm('是否要删除此人员?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // deleteFlash(row.id).then(response => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   });
-        //   this.getList();
-        // });
+        roleApi.remove(row.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getList()
+        })
       })
     },
     handleAdd () {
-      this.userEditDialogVisible = true
+      this.roleEditDialogVisible = true
       this.isEdit = false
-      this.userEdit = Object.assign({}, defaultUserEdit)
+      this.roleEdit = Object.assign({}, defaultRoleEdit)
     },
-    handlerUserEditDialogOpen () {
+    handlerRoleEditDialogOpen () {
       // this.$refs.userEditForm.resetFields()
       // console.log(this.$refs)
     },
-    handleUserEditDialogConfirm () {
-      this.$refs.userEditForm.validate((valid) => {
+    handleRoleEditDialogConfirm () {
+      this.$refs.roleEditForm.validate((valid) => {
         if (valid) {
           if (this.isEdit) {
-            userApi.update(this.userEdit).then(response => {
+            roleApi.update(this.roleEdit).then(response => {
               this.$message({
                 message: response.data,
                 type: 'success'
               })
-              this.userEditDialogVisible = false
-              this.getUserList()
+              this.roleEditDialogVisible = false
+              this.getList()
             })
           } else {
-            userApi.create(this.userEdit).then(response => {
+            roleApi.create(this.roleEdit).then(response => {
               this.$message({
                 message: response.data,
                 type: 'success'
               })
-              this.userEditDialogVisible = false
-              this.getUserList()
+              this.roleEditDialogVisible = false
+              this.getList()
             })
           }
         } else {
@@ -325,9 +226,23 @@ export default {
         }
       })
     },
-    getUserList () {
+    handlePemissionDialogConfirm () {
+      const roleIdSelect = this.roleIdSelect
+      const checkId = this.$refs.pemissionTree.getCheckedKeys()
+      permissionApi.roleAddPermissions({
+        roleId: roleIdSelect,
+        checkId: checkId
+      }).then(response => {
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+        this.pemissionDialogVisible = false
+      })
+    },
+    getList () {
       this.listLoading = true
-      userApi.fetchList(this.queryParamsTrans).then((response) => {
+      roleApi.fetchList(this.queryParamsTrans).then((response) => {
         this.listLoading = false
         const data = response.data
         const { list, total } = data
@@ -339,7 +254,9 @@ export default {
     },
     handlePageCurrentChange (val) {
       this.queryParams.pageNum = val
-      this.getUserList()
+      this.getList()
+    },
+    loadPemission () {
     }
   }
 }
