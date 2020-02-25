@@ -37,7 +37,7 @@ export default new Router({
       path: 'permission',
       name: 'permission',
       component: () => import('@/views/permission'),
-      meta: { title: '权限管理', icon: 'cooperation' }
+      meta: { title: '菜单管理', icon: 'cooperation' }
     }]
   }, {
     path: '/login',

@@ -24,8 +24,16 @@ export function update (data) {
   })
 }
 
+export function remove (id) {
+  return request({
+    url: '/sysPermission/delete/' + id,
+    method: 'post'
+  })
+}
+
 export default {
   fetchList,
   create,
-  update
+  update,
+  remove
 }
