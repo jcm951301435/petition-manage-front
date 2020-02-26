@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '@/store'
 
 // create an axios instance
@@ -38,7 +38,7 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 401 || res.code === 403 || res.code === 50014) {
+      if (res.code === 401 || res.code === 50014) {
         store.dispatch('user/frontLogOut').then(() => {
           location.reload()
         })

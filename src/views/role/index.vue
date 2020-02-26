@@ -7,7 +7,7 @@
         <el-button style="float:right;margin-right: 15px" size="small" @click="handleResetSearch()">
           重置
         </el-button>
-        <el-button style="float:right" type="primary" size="small" @click="handleSearchList()">
+        <el-button :disabled="!$checkMenuShow('role:list')" style="float:right" type="primary" size="small" @click="handleSearchList()">
           确认查询
         </el-button>
       </div>
@@ -22,7 +22,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" />
       <span>角色列表</span>
-      <el-button type="primary" class="btn-add" @click="handleAdd()" style="margin-left: 20px">
+      <el-button :disabled="!$checkMenuShow('role:add')" type="primary" class="btn-add" @click="handleAdd()" style="margin-left: 20px">
         添加
       </el-button>
     </el-card>
@@ -38,13 +38,13 @@
         <el-table-column prop="insertByName" label="创建人" width="160" />
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
-            <el-button @click="handlePemissionRelation(scope.$index, scope.row)" type="primary" size="small">
+            <el-button :disabled="!$checkMenuShow('role:addPermission')" @click="handlePemissionRelation(scope.$index, scope.row)" type="primary" size="small">
               授权菜单
             </el-button>
-            <el-button @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
+            <el-button :disabled="!$checkMenuShow('role:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
-            <el-button @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
+            <el-button :disabled="!$checkMenuShow('role:delete')" @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
               删除
             </el-button>
           </template>
@@ -80,7 +80,7 @@
     <el-dialog v-loading="pemissionListLoading" :title="'授权菜单'" :visible.sync="pemissionDialogVisible" :close-on-click-modal="false"
                width="40%"
     >
-      <el-tree :props="pemissionProps" :data="pemissionList" node-key="id"
+      <el-tree :props="pemissionProps" :data="pemissionList" node-key="id" :check-strictly="true"
                show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
       />
       <span slot="footer" class="dialog-footer">
@@ -93,7 +93,6 @@
 
 <script>
 import roleApi from '@/api/role'
-import permissionApi from '@/api/permission'
 
 const defaultQueryParams = {
   name: '',
@@ -164,7 +163,7 @@ export default {
       this.pemissionDialogVisible = true
       this.pemissionCheckId = []
       this.roleIdSelect = row.id
-      permissionApi.rolePermissionList(row.id).then((response) => {
+      roleApi.rolePermissionList(row.id).then((response) => {
         const data = response.data
         this.pemissionList = data.allList
         this.pemissionCheckId = data.checkId
@@ -229,7 +228,7 @@ export default {
     handlePemissionDialogConfirm () {
       const roleIdSelect = this.roleIdSelect
       const checkId = this.$refs.pemissionTree.getCheckedKeys()
-      permissionApi.roleAddPermissions({
+      roleApi.roleAddPermissions({
         roleId: roleIdSelect,
         checkId: checkId
       }).then(response => {

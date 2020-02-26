@@ -27,17 +27,17 @@ export default new Router({
       path: 'user',
       name: 'user',
       component: () => import('@/views/user'),
-      meta: { title: '用户管理', icon: 'cooperation' }
+      meta: { title: '用户管理', icon: 'cooperation', value: 'user:index' }
     }, {
       path: 'role',
       name: 'role',
       component: () => import('@/views/role'),
-      meta: { title: '角色管理', icon: 'cooperation' }
+      meta: { title: '角色管理', icon: 'cooperation', value: 'role:index' }
     }, {
       path: 'permission',
       name: 'permission',
       component: () => import('@/views/permission'),
-      meta: { title: '菜单管理', icon: 'cooperation' }
+      meta: { title: '菜单管理', icon: 'cooperation', value: 'permission:index' }
     }]
   }, {
     path: '/login',

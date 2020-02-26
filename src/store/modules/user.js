@@ -6,7 +6,8 @@ const user = {
   namespaced: true,
   state: {
     userInfo: getUserInfo(),
-    roles: []
+    roles: [],
+    permissions: []
   },
   getters: {
     hasUserInfo: state => {
@@ -24,6 +25,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_PERMISSIONS: (state, permissions) => {
+      state.permissions = permissions
     }
   },
   actions: {
@@ -46,6 +50,7 @@ const user = {
       return new Promise((resolve, reject) => {
         userApi.logout().then(() => {
           commit('REMOVE_USERINFO')
+          commit('SET_PERMISSIONS', [])
           resolve()
         }).catch(error => {
           reject(error)
@@ -56,7 +61,14 @@ const user = {
     frontLogOut ({ commit }) {
       return new Promise(resolve => {
         commit('REMOVE_USERINFO')
+        commit('SET_PERMISSIONS', [])
         resolve()
+      })
+    },
+
+    getUserPermissions ({ commit }) {
+      userApi.permissionList().then(response => {
+        commit('SET_PERMISSIONS', response.data)
       })
     }
 

@@ -47,7 +47,10 @@ export default {
       return !this.asideBarActive
     },
     routes () {
-      return this.$router.options.routes
+      const routes = this.$router.options.routes
+      return routes.filter(temp => {
+        return temp.path !== '/login'
+      })
     }
   },
   mounted: function () {

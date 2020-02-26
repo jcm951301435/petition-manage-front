@@ -63,11 +63,15 @@ export default {
       const children = this.item.children
       if (children) {
         const childrenShow = children.filter((child) => {
-          if (child.hidden) {
-            return false
+          if (child.path === '/' || child.path === 'home') {
+            return true
           }
-          return true
+          if (!child.hidden && this.$checkMenuShow(child.meta.value)) {
+            return true
+          }
+          return false
         })
+        // console.log(childrenShow)
         return childrenShow
       }
       return []

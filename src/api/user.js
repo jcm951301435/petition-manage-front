@@ -49,11 +49,20 @@ export function remove (id) {
   })
 }
 
+export function permissionList (params) {
+  return request({
+    url: '/sysUser/permissionList',
+    method: 'post',
+    params: params
+  })
+}
+
 export default {
   login,
   logout,
   fetchList,
   create,
   update,
-  remove
+  remove,
+  permissionList
 }

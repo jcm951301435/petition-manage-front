@@ -7,7 +7,7 @@
         <el-button style="float:right;margin-right: 15px" size="small" @click="handleResetSearch()">
           重置
         </el-button>
-        <el-button style="float:right" type="primary" size="small" @click="handleSearchList()">
+        <el-button :disabled="$checkMenuShow('permission:list')" style="float:right" type="primary" size="small" @click="handleSearchList()">
           确认查询
         </el-button>
       </div>
@@ -35,21 +35,21 @@
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
         <el-table-column prop="name" label="菜单名称" width="150" />
-        <el-table-column prop="value" label="值" width="160" />
         <el-table-column prop="icon" label="图标" width="160" />
-        <el-table-column prop="uri" label="地址" width="160" />
+        <el-table-column prop="value" label="值" width="160" />
+        <!-- <el-table-column prop="uri" label="地址" width="160" /> -->
         <!-- <el-table-column prop="type" label="类型" width="160" /> -->
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
         <el-table-column label="操作" width="250" align="center">
           <template slot-scope="scope">
-            <el-button @click="handleAddChild(scope.$index, scope.row)" type="primary" size="small">
+            <el-button :disabled="!$checkMenuShow('permission:add')" @click="handleAddChild(scope.$index, scope.row)" type="primary" size="small">
               添加下级
             </el-button>
-            <el-button @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
+            <el-button :disabled="!$checkMenuShow('permission:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
-            <el-button @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
+            <el-button :disabled="!$checkMenuShow('permission:delete')" @click="handleDelete(scope.$index, scope.row)" type="danger" size="small">
               删除
             </el-button>
           </template>
@@ -72,9 +72,9 @@
         <el-form-item label="图标：" prop="icon">
           <el-input v-model="permissionEdit.icon" style="width: 250px" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="地址：" prop="uri">
+        <!-- <el-form-item label="地址：" prop="uri">
           <el-input v-model="permissionEdit.uri" style="width: 250px" autocomplete="off" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="permissionEditDialogVisible = false" size="small">取 消</el-button>
@@ -113,8 +113,7 @@ export default {
       isEdit: false,
       rules: {
         name: { required: true, message: '请输入菜单名称', trigger: 'blur' },
-        value: { required: true, message: '请输入菜单值', trigger: 'blur' },
-        uri: { required: true, message: '请输入菜单地址', trigger: 'blur' }
+        value: { required: true, message: '请输入菜单值', trigger: 'blur' }
       }
     }
   },
