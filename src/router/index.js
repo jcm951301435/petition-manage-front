@@ -38,6 +38,33 @@ export default new Router({
       name: 'permission',
       component: () => import('@/views/permission'),
       meta: { title: '菜单管理', icon: 'cooperation', value: 'permission:index' }
+    }, {
+      path: 'list',
+      name: 'list',
+      component: () => import('@/views/list'),
+      meta: { title: '列选管理', icon: 'cooperation', value: 'list:index' }
+    }]
+  }, {
+    path: '/petition',
+    name: 'petition',
+    component: Main,
+    redirect: '/petition/company',
+    meta: { title: '上访管理', icon: 'cooperation' },
+    children: [{
+      path: 'company',
+      name: 'company',
+      component: () => import('@/views/company'),
+      meta: { title: '公司管理', icon: 'cooperation', value: 'company:index' }
+    }, {
+      path: 'contradiction',
+      name: 'contradiction',
+      component: () => import('@/views/contradiction'),
+      meta: { title: '信访矛盾', icon: 'cooperation', value: 'contradiction:index' }
+    }, {
+      path: 'troubleshoot',
+      name: 'troubleshoot',
+      component: () => import('@/views/troubleshoot'),
+      meta: { title: '矛盾排查', icon: 'cooperation', value: 'troubleshoot:index' }
     }]
   }, {
     path: '/login',

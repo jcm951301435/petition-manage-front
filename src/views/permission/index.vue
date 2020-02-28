@@ -7,7 +7,7 @@
         <el-button style="float:right;margin-right: 15px" size="small" @click="handleResetSearch()">
           重置
         </el-button>
-        <el-button :disabled="$checkMenuShow('permission:list')" style="float:right" type="primary" size="small" @click="handleSearchList()">
+        <el-button :disabled="!$checkMenuShow('permission:list')" style="float:right" type="primary" size="small" @click="handleSearchList()">
           确认查询
         </el-button>
       </div>
