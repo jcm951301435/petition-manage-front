@@ -14,6 +14,10 @@ a, a:focus, a:hover {
   margin-bottom: 10px;
 }
 
+.el-form-item--medium .el-form-item__content, .el-form-item--medium .el-form-item__label {
+  line-height: 30px;
+}
+
 /* .current-row>td {
   background: #55d311 !important;
 } */

@@ -146,7 +146,7 @@ export default {
       }
       paramsTrans.pageNum = pageObj.pageNum
       paramsTrans.pageSize = pageObj.pageSize
-      return this.queryParams
+      return paramsTrans
     }
   },
   created () {

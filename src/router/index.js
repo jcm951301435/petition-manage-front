@@ -61,6 +61,21 @@ export default new Router({
       component: () => import('@/views/contradiction'),
       meta: { title: '信访矛盾', icon: 'cooperation', value: 'contradiction:index' }
     }, {
+      path: 'contradictionAdd',
+      name: 'contradictionAdd',
+      component: () => import('@/views/contradiction/detail'),
+      meta: { title: '新增信访矛盾', icon: 'cooperation' }
+    }, {
+      path: 'contradictionUpdate',
+      name: 'contradictionUpdate',
+      component: () => import('@/views/contradiction/detail'),
+      meta: { title: '修改信访矛盾', icon: 'cooperation' }
+    }, {
+      path: 'contradictionDetail',
+      name: 'contradictionDetail',
+      component: () => import('@/views/contradiction/detail'),
+      meta: { title: '信访矛盾明细', icon: 'cooperation' }
+    }, {
       path: 'troubleshoot',
       name: 'troubleshoot',
       component: () => import('@/views/troubleshoot'),
