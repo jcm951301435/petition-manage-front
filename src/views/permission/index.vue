@@ -12,7 +12,7 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="queryParams" size="small" label-width="140px">
+        <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="菜单名：">
             <el-input v-model="queryParams.name" class="input-width" placeholder="菜单名" />
           </el-form-item>
@@ -133,7 +133,7 @@ export default {
       this.getList()
     },
     handleResetSearch () {
-
+      this.queryParams = Object.assign({}, defaultQueryParams)
     },
     handleUpdate (index, row) {
       this.permissionEditDialogVisible = true

@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-row :gutter="10">
       <el-col :span="16">
         <el-row>
           <el-form ref="contradictionForm" :label-position="'right'" :model="contradictionForm" :rules="rules" size="medium"
-                   label-width="100px"
+                   label-width="100px" :disabled="isQuery"
           >
             <el-col :span="24">
-              <el-form-item label-width="150px" label="突出信访矛盾类别" prop="contradictionType">
-                <el-checkbox-group v-model="contradictionForm.contradictionType">
+              <el-form-item label-width="150px" label="突出信访矛盾类别" prop="contradictionTypes">
+                <el-checkbox-group v-model="contradictionForm.contradictionTypes">
                   <el-checkbox v-for="item in contradictionTypeOptions" :key="item.listKey" :label="item.listKey">
                     {{ item.listValue }}
                   </el-checkbox>
@@ -27,10 +27,10 @@
               <el-col :span="8">
                 <el-form-item label="性别" prop="applySex">
                   <el-radio-group v-model="contradictionForm.applySex">
-                    <el-radio :label="1">
+                    <el-radio :label="'1'">
                       男
                     </el-radio>
-                    <el-radio :label="0">
+                    <el-radio :label="'0'">
                       女
                     </el-radio>
                   </el-radio-group>
@@ -42,8 +42,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="信访类型" prop="petitionType">
-                  <el-checkbox-group v-model="contradictionForm.petitionType">
+                <el-form-item label="信访类型" prop="petitionTypes">
+                  <el-checkbox-group v-model="contradictionForm.petitionTypes">
                     <el-checkbox v-for="item in petitionTypeOptions" :key="item.listKey" :label="item.listKey">
                       {{ item.listValue }}
                     </el-checkbox>
@@ -149,7 +149,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label-width="120px" label="末次信访时间" prop="lastPetitionTime">
-                  <el-date-picker v-model="contradictionForm.lastPetitionTime" align="right" type="date" placeholder="请选择末次信访时间" />
+                  <el-date-picker v-model="contradictionForm.lastPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date" placeholder="请选择末次信访时间" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -220,14 +220,14 @@
                 </el-form-item>
               </el-col>
               <el-col :span="23">
-                <el-form-item label-width="120px" label="化解形式" prop="field129">
-                  <el-checkbox-group v-model="contradictionForm.resolveForm">
+                <el-form-item label-width="120px" label="化解形式" prop="resolveForms">
+                  <el-checkbox-group v-model="contradictionForm.resolveForms">
                     <el-checkbox style="display:block;" v-for="item in resolveFormOptions" :key="item.listKey" :label="item.listKey">
                       {{ item.listValue }}
                     </el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
-                <el-form-item v-show="contradictionForm.resolveForm.indexOf('6') >= 0" label-width="120px" label="其他化解形式" prop="resolveFormOtherContent">
+                <el-form-item v-show="contradictionForm.resolveForms.indexOf('6') >= 0" label-width="120px" label="其他化解形式" prop="resolveFormOtherContent">
                   <el-input v-model="contradictionForm.resolveFormOtherContent" type="textarea" placeholder="请输入其他化解形式"
                             :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"
                   />
@@ -240,9 +240,9 @@
                 <el-button type="primary" @click="submitForm">
                   提交
                 </el-button>
-                <el-button @click="resetForm">
+                <!-- <el-button @click="resetForm">
                   重置
-                </el-button>
+                </el-button> -->
               </el-form-item>
             </el-col>
           </el-form>
@@ -257,9 +257,9 @@ import companyApi from '@/api/company'
 import contradictionApi from '@/api/contradiction'
 
 const defaultContradictionForm = {
-  contradictionType: [],
-  petitionType: [],
-  resolveForm: []
+  contradictionTypes: [],
+  petitionTypes: [],
+  resolveForms: []
 }
 
 export default {
@@ -275,7 +275,8 @@ export default {
       companyOptions: [],
       resolveLevelOptions: [],
       resolveFormOptions: [],
-      rules: {}
+      rules: {},
+      loading: false
     }
   },
   computed: {
@@ -284,8 +285,13 @@ export default {
     },
     formatForm () {
       return {
-
       }
+    },
+    isEdit () {
+      return this.$route.name === 'contradictionUpdate'
+    },
+    isQuery () {
+      return this.$route.name === 'contradictionDetail'
     }
   },
   watch: {},
@@ -310,19 +316,48 @@ export default {
     })
     this.getCompanyList()
   },
-  mounted () {},
+  mounted () {
+    if (this.isEdit || this.isQuery) {
+      const id = this.$route.query.id
+      this.loading = true
+      contradictionApi.fetchList({
+        id: id
+      }).then(response => {
+        this.loading = false
+        const list = response.data.list
+        if (list && list.length > 0) {
+          this.contradictionForm = list[0]
+        } else {
+          this.$message({
+            type: 'error',
+            message: '找不到此纪录，请联系管理员!'
+          })
+        }
+        
+      })
+    }
+  },
   methods: {
     submitForm () {
       this.$refs['contradictionForm'].validate(valid => {
         if (!valid) {
           return
         }
-        contradictionApi.create(this.contradictionForm).then(response => {
-          this.$message({
-            message: response.data,
-            type: 'success'
+        if (this.isEdit) {
+          contradictionApi.update(this.contradictionForm).then(response => {
+            this.$message({
+              message: response.data,
+              type: 'success'
+            })
           })
-        })
+        } else {
+          contradictionApi.create(this.contradictionForm).then(response => {
+            this.$message({
+              message: response.data,
+              type: 'success'
+            })
+          })
+        }
       })
     },
     resetForm () {

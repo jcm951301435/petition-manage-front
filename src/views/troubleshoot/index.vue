@@ -12,7 +12,7 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="queryParams" size="small" label-width="140px">
+        <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="归口集团：">
             <el-autocomplete class="inline-input" v-model="queryParams.companyName" value-key="name" :fetch-suggestions="handleQueryCompanySearch" placeholder="归口集团" />
           </el-form-item>
@@ -216,7 +216,7 @@ export default {
       this.getList()
     },
     handleResetSearch () {
-
+      this.queryParams = Object.assign({}, defaultQueryParams)
     },
     handleQueryCompanySearch (queryString, callBack) {
       this.getCompanyList(queryString, callBack)

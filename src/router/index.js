@@ -104,6 +104,7 @@ export default new Router({
   //   }]
   }, {
     path: '*',
+    hidden: true,
     component: () => import('@/views/404')
   }]
 })

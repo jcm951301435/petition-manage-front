@@ -12,9 +12,9 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="queryParams" size="small" label-width="140px">
+        <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="类别名：">
-            <el-input v-model="queryParams.listName" class="input-width" placeholder="类别名：" />
+            <el-input v-model="queryParams.listName" class="input-width" placeholder="类别名" />
           </el-form-item>
           <el-form-item label="键:">
             <el-input v-model="queryParams.listKey" class="input-width" placeholder="键" />
@@ -163,7 +163,7 @@ export default {
       this.getList()
     },
     handleResetSearch () {
-
+      this.queryParams = Object.assign({}, defaultQueryParams)
     },
     handleUpdate (index, row) {
       this.listEditDialogVisible = true

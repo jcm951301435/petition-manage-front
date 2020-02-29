@@ -12,7 +12,7 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="queryParams" size="small" label-width="140px">
+        <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="姓名：">
             <el-input v-model="queryParams.applyName" class="input-width" placeholder="姓名" />
           </el-form-item>
@@ -35,15 +35,24 @@
       >
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
-        <el-table-column prop="applyName" label="姓名" width="150" />
-        <el-table-column prop="responsibleCompany" label="责任单位" width="160" />
-        <el-table-column prop="resolveLevel" label="易化解程度" width="160" />
-        <el-table-column prop="petitionType" label="信访类型" width="160" />
-        <el-table-column prop="purposeType" label="目的分类" width="160" />
+        <el-table-column label="姓名" width="150">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="handleToDetail(scope.$index, scope.row)">
+              {{ scope.row.applyName }}
+            </el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="companyName" label="责任单位" width="160" />
+        <el-table-column prop="resolveLevelName" label="易化解程度" width="160" />
+        <!-- <el-table-column prop="petitionType" label="信访类型" width="160" /> -->
+        <el-table-column prop="purposeName" label="目的分类" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
+            <el-button @click="handleToDetail(scope.$index, scope.row)" type="primary" size="small">
+              查看
+            </el-button>
             <el-button :disabled="!$checkMenuShow('contradiction:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
             </el-button>
@@ -116,9 +125,13 @@ export default {
       this.getList()
     },
     handleResetSearch () {
-
+      this.queryParams = Object.assign({}, defaultQueryParams)
+    },
+    handleToDetail (index, row) {
+      this.$router.push({ path: '/petition/contradictionDetail', query: { id: row.id } })
     },
     handleUpdate (index, row) {
+      this.$router.push({ path: '/petition/contradictionUpdate', query: { id: row.id } })
     },
     handleDelete (index, row) {
       this.$confirm('是否要删除此人员?', '提示', {
