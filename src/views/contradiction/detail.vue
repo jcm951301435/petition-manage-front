@@ -96,7 +96,7 @@
             </el-tag>
             <el-card>
               <el-col :span="8">
-                <el-form-item label="责任单位" prop="field113">
+                <el-form-item label="责任单位" prop="companyId">
                   <el-select v-model="contradictionForm.companyId" filterable placeholder="请选择">
                     <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
@@ -108,22 +108,25 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label-width="120px" label="负责人手机号" prop="field115">
+                <el-form-item label-width="120px" label="负责人手机号" prop="responsibleContactTelephone">
                   <el-input v-model="contradictionForm.responsibleContactTelephone" placeholder="请输入负责人手机号" clearable :style="{width: '100%'}" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label-width="120px" label="近年进京情况" prop="field116">
+                <el-form-item label-width="120px" label="近年进京情况" prop="enterBeijingState">
                   <el-input v-model="contradictionForm.enterBeijingState" placeholder="请输入近年进京情况" clearable :style="{width: '100%'}" />
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="field117">
-                  <!-- <el-upload ref="field117" :file-list="field117fileList" :action="field117Action" :before-upload="field117BeforeUpload">
-                    <el-button size="small" type="primary" icon="el-icon-upload">
-                      点击上传
+                <el-form-item label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="fileList">
+                  <el-upload ref="uploadBtn" :file-list="fileList" :action="fileListAction" :before-upload="fileListBeforeUpload"
+                             :data="{ id: idComputed }" :before-remove="handleFileListRemove" :on-error="handleFileUploadError"
+                             :on-success="handleFileUploadSuccess"
+                  >
+                    <el-button :disabled="!isEdit" size="small" type="primary" icon="el-icon-upload">
+                      {{ isEdit ? '点击上传' : '保存后点击上传' }}
                     </el-button>
-                  </el-upload> -->
+                  </el-upload>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -144,12 +147,16 @@
             <el-card>
               <el-col :span="8">
                 <el-form-item label-width="120px" label="首次信访时间" prop="firstPetitionTime">
-                  <el-date-picker v-model="contradictionForm.firstPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date" placeholder="请选择首次信访时间" />
+                  <el-date-picker v-model="contradictionForm.firstPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date"
+                                  placeholder="请选择首次信访时间"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label-width="120px" label="末次信访时间" prop="lastPetitionTime">
-                  <el-date-picker v-model="contradictionForm.lastPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date" placeholder="请选择末次信访时间" />
+                  <el-date-picker v-model="contradictionForm.lastPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date"
+                                  placeholder="请选择末次信访时间"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -159,19 +166,37 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="23">
-                <el-form-item label-width="120px" label="信访人诉求概述" prop="field124">
-                  <el-input v-model="contradictionForm.field124" type="textarea" placeholder="请输入信访人诉求概述"
-                            :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"
-                  />
-                </el-form-item>
+              <el-col :span="18">
+                <el-button type="success" @click.prevent="addContradictionContent()">
+                  新增诉求概述
+                </el-button>
               </el-col>
-              <el-col :span="23">
-                <el-form-item label-width="120px" label="化解过程简述" prop="field126">
-                  <el-input v-model="contradictionForm.field126" type="textarea" placeholder="请输入化解过程简述"
-                            :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"
+              <el-col :span="18">
+                <el-form-item v-for="(item, index) in contradictionForm.contradictionContent" :key="index" label-width="120px" :label="'信访人诉求概述' + (index < 1 ? '' : index)">
+                  <el-input v-model="contradictionForm.contradictionContent[index].contradictionContent"
+                            type="textarea" placeholder="请输入信访人诉求概述" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '80%'}"
                   />
+                  <el-button v-show="index > 0" type="danger" @click.prevent="removeContradictionContent(item, index)">
+                    删除
+                  </el-button>
                 </el-form-item>
+                <el-divider />
+              </el-col>
+              <el-col :span="18">
+                <el-button type="success" @click.prevent="addContradictionResolveProcess()">
+                  新增化解过程
+                </el-button>
+              </el-col>
+              <el-col :span="18">
+                <el-form-item v-for="(item, index) in contradictionForm.contradictionResolveProcess" :key="index" label-width="120px" :label="'化解过程简述' + (index < 1 ? '' : index)">
+                  <el-input v-model="contradictionForm.contradictionResolveProcess[index].resolveContent"
+                            type="textarea" placeholder="请输入化解过程简述" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '80%'}"
+                  />
+                  <el-button v-show="index > 0" type="danger" @click.prevent="removeContradictionResolveProcess(item, index)">
+                    删除
+                  </el-button>
+                </el-form-item>
+                <el-divider />
               </el-col>
               <el-col :span="23">
                 <el-form-item label-width="120px" label="化解推进方法" prop="resolveMethodSelf">
@@ -252,6 +277,7 @@
   </div>
 </template>
 <script>
+import fileApi from '@/api/file'
 import listApi from '@/api/list'
 import companyApi from '@/api/company'
 import contradictionApi from '@/api/contradiction'
@@ -259,7 +285,9 @@ import contradictionApi from '@/api/contradiction'
 const defaultContradictionForm = {
   contradictionTypes: [],
   petitionTypes: [],
-  resolveForms: []
+  resolveForms: [],
+  contradictionContent: [],
+  contradictionResolveProcess: []
 }
 
 export default {
@@ -276,7 +304,8 @@ export default {
       resolveLevelOptions: [],
       resolveFormOptions: [],
       rules: {},
-      loading: false
+      loading: false,
+      fileListAction: '/sysFile/upload'
     }
   },
   computed: {
@@ -287,11 +316,39 @@ export default {
       return {
       }
     },
+    idComputed () {
+      return this.$route.query.id
+    },
     isEdit () {
       return this.$route.name === 'contradictionUpdate'
     },
     isQuery () {
       return this.$route.name === 'contradictionDetail'
+    },
+    fileList () {
+      const fileList = this.contradictionForm.fileList
+      var list = []
+      for (var i in fileList) {
+        list.push({
+          name: fileList[i].fileOldName,
+          id: fileList[i].id
+        })
+      }
+      return list
+    },
+    contradictionContentComputed () {
+      const contradictionContent = this.contradictionForm.contradictionContent
+      return contradictionContent && contradictionContent.length > 0 ? contradictionContent : [{
+        id: '',
+        contradictionContent: ''
+      }]
+    },
+    contradictionResolveProcessComputed () {
+      const contradictionResolveProcess = this.contradictionForm.contradictionResolveProcess
+      return contradictionResolveProcess && contradictionResolveProcess.length > 0 ? contradictionResolveProcess : [{
+        id: '',
+        resolveContent: ''
+      }]
     }
   },
   watch: {},
@@ -319,6 +376,11 @@ export default {
   mounted () {
     if (this.isEdit || this.isQuery) {
       const id = this.$route.query.id
+      this.getDetail(id)
+    }
+  },
+  methods: {
+    getDetail (id) {
       this.loading = true
       contradictionApi.fetchList({
         id: id
@@ -333,12 +395,10 @@ export default {
             message: '找不到此纪录，请联系管理员!'
           })
         }
-        
       })
-    }
-  },
-  methods: {
+    },
     submitForm () {
+      const _self = this
       this.$refs['contradictionForm'].validate(valid => {
         if (!valid) {
           return
@@ -347,14 +407,23 @@ export default {
           contradictionApi.update(this.contradictionForm).then(response => {
             this.$message({
               message: response.data,
-              type: 'success'
+              type: 'success',
+              duration: 1000,
+              onClose: () => {
+                location.reload()
+              }
             })
           })
         } else {
           contradictionApi.create(this.contradictionForm).then(response => {
+            const id = response.data
             this.$message({
-              message: response.data,
-              type: 'success'
+              message: response.message,
+              type: 'success',
+              duration: 1000,
+              onClose: () => {
+                _self.$router.push({ path: '/petition/contradictionUpdate', query: { id: id } })
+              }
             })
           })
         }
@@ -363,12 +432,80 @@ export default {
     resetForm () {
       this.$refs['elForm'].resetFields()
     },
-    field117BeforeUpload (file) {
-      let isRightSize = file.size / 1024 / 1024 < 2
+    addContradictionContent () {
+      this.contradictionForm.contradictionContent.push({
+        id: '',
+        contradictionContent: ''
+      })
+      // if (this.contradictionForm.contradictionContent.length === 1) {
+      //   this.contradictionForm.contradictionContent.push({
+      //     id: '',
+      //     contradictionContent: ''
+      //   })
+      // }
+    },
+    removeContradictionContent (item, index) {
+      if (index !== -1) {
+        this.contradictionForm.contradictionContent.splice(index, 1)
+      }
+    },
+    addContradictionResolveProcess () {
+      this.contradictionForm.contradictionResolveProcess.push({
+        id: '',
+        resolveContent: ''
+      })
+      // if (this.contradictionForm.contradictionResolveProcess.length === 1) {
+      //     this.contradictionForm.contradictionResolveProcess.push({
+      //     id: '',
+      //     resolveContent: ''
+      //   })
+      // }
+    },
+    removeContradictionResolveProcess (item, index) {
+      if (index !== -1) {
+        this.contradictionForm.contradictionResolveProcess.splice(index, 1)
+      }
+    },
+    fileListBeforeUpload (file) {
+      let isRightSize = file.size / 1024 / 1024 < 1024
       if (!isRightSize) {
-        this.$message.error('文件大小超过 2MB')
+        this.$message.error('文件大小超过 1024MB')
       }
       return isRightSize
+    },
+    handleFileListRemove (file, fileList) {
+      this.$confirm('是否要删除此文件?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        fileApi.remove(file.id).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getFileList()
+        })
+      })
+      return false
+    },
+    handleFileUploadSuccess (response, file, fileList) {
+      if (response.code !== 200) {
+        this.$message({
+          type: 'error',
+          message: response.message
+        })
+      }
+      this.getFileList()
+    },
+    handleFileUploadError (err, file, fileList) {
+      console.log(err)
+      console.log(file)
+      console.log(fileList)
+      this.$message({
+        type: 'error',
+        message: '上传失败，请检查文件是否过大!'
+      })
     },
     getListByType (type) {
       return listApi.fetchList({
@@ -381,6 +518,13 @@ export default {
         if (callBack) {
           callBack(response.data.list)
         }
+      })
+    },
+    getFileList () {
+      fileApi.fetchList({
+        id: this.idComputed
+      }).then(response => {
+        this.contradictionForm.fileList = response.data
       })
     }
   }
