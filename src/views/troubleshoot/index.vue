@@ -35,6 +35,16 @@
       <el-button :disabled="!$checkMenuShow('troubleshoot:add')" type="primary" class="btn-add" @click="handleAdd()" style="margin-left: 20px">
         添加
       </el-button>
+      <el-upload ref="uploadBtn" :before-upload="importExcelBeforeUpload" :show-file-list="false" :action="importExcelAction" :http-request="importExcelUpload"
+                 style="display: inline-block; margin-left: 20px;"
+      >
+        <el-button :disabled="!$checkMenuShow('troubleshoot:import')" slot="trigger" type="success">
+          导入Excel
+        </el-button>
+      </el-upload>
+      <el-button :disabled="!$checkMenuShow('troubleshoot:export')" type="success" class="btn-add" @click="handleExport()" style="margin-left: 20px">
+        导出查询结果
+      </el-button>
     </el-card>
     <div class="table-container">
       <el-table :data="list" border stripe highlight-current-row v-loading="listLoading"
@@ -183,7 +193,8 @@ export default {
       }, {
         id: '3', label: '留存', value: '留存'
       }],
-      companyOptions: []
+      companyOptions: [],
+      importExcelAction: '/petitionTroubleshoot/import'
     }
   },
   computed: {
@@ -246,6 +257,9 @@ export default {
       this.isEdit = false
       this.edit = Object.assign({}, defaultEdit)
     },
+    handleExport () {
+      troubleshootApi.exportExcel(this.queryParamsTrans)
+    },
     handlerEditDialogOpen () {
     },
     handleEditDialogConfirm () {
@@ -274,6 +288,22 @@ export default {
           return false
         }
       })
+    },
+    importExcelUpload (option) {
+      troubleshootApi.importExcel(option).then(response => {
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+        this.getList()
+      })
+    },
+    importExcelBeforeUpload (file) {
+      let isRightSize = file.size / 1024 / 1024 < 1024
+      if (!isRightSize) {
+        this.$message.error('文件大小超过 1024MB')
+      }
+      return isRightSize
     },
     getList () {
       this.listLoading = true

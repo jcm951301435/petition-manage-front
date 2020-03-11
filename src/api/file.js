@@ -15,7 +15,17 @@ export function remove (id) {
   })
 }
 
+export function download (file) {
+  return request({
+    url: '/sysFile/download/' + file.id,
+    method: 'post',
+    responseType: 'blob',
+    data: file
+  })
+}
+
 export default {
   remove,
-  fetchList
+  fetchList,
+  download
 }

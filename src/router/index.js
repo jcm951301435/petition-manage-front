@@ -48,7 +48,7 @@ export default new Router({
     path: '/petition',
     name: 'petition',
     component: Main,
-    redirect: '/petition/company',
+    redirect: '/petition/contradiction',
     meta: { title: '上访管理', icon: 'cooperation' },
     children: [{
       path: 'company',

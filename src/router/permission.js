@@ -12,40 +12,47 @@ import { Message } from 'element-ui'
 const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
-  next()
   NProgress.start()
   const hasUserInfo = store.getters['user/hasUserInfo']
   const permissions = store.state.user.permissions
   if (hasUserInfo) {
     if (to.path === '/login') {
-      next({ path: '/' })
-      NProgress.done()
+      nextRouter(next, '', '/')
     } else {
       if (permissions.length <= 0) {
         store.dispatch('user/getUserPermissions').then(res => {
-          next()
-          NProgress.done()
+          nextRouter(next, '', '', to)
         }).catch(err => {
           store.dispatch('user/frontLogOut').then(() => {
             Message.error(err || 'Verification failed, please login again')
-            next({ path: '/' })
+            nextRouter(next, '', '/')
           })
         })
       } else {
-        next()
-        NProgress.done()
+        nextRouter(next, '', '', to)
       }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
-      next()
-      NProgress.done()
+      nextRouter(next, '', '', to)
     } else {
-      next('/login')
-      NProgress.done()
+      nextRouter(next, '/login')
     }
   }
 })
+
+function nextRouter (next, uri, path, to) {
+  if (uri) {
+    next(uri)
+  } else if (path) {
+    next({ path: path })
+  }
+  if (to && to.meta && to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
+  NProgress.done()
+}
 
 router.afterEach(() => {
   NProgress.done()

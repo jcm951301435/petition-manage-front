@@ -13,6 +13,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
+    console.log(config)
     return config
   },
   error => {
@@ -27,6 +28,26 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
+    if (res instanceof Blob) {
+      console.log(response)
+      const headers = response.headers
+      const disposition = headers['content-disposition']
+      var fileName
+      if (disposition) {
+        fileName = disposition.substring(disposition.indexOf('fileName=') + 9, disposition.length)
+        fileName = decodeURI(fileName)
+      }
+      let url = window.URL.createObjectURL(res)
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      if (fileName) {
+        link.setAttribute('download', fileName)
+      }
+      document.body.appendChild(link)
+      link.click()
+      return res
+    }
     /**
     * code为非200是抛错 可结合自己业务进行修改
     */
@@ -58,5 +79,25 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export function importService (url, option) {
+  const formData = new FormData()
+  if (option.data) {
+    Object.keys(option.data).forEach(key => {
+      formData.append(key, option.data[key])
+    })
+  }
+  formData.append(option.filename, option.file, option.file.name)
+  return service({
+    url: url,
+    headers: {
+      post: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    method: 'post',
+    data: formData
+  })
+}
 
 export default service

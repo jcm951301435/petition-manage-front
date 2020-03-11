@@ -2,7 +2,7 @@
   <el-card class="login-form-layout">
     <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm">
       <h2 class="login-title">
-        拾山远
+        市国资信访矛盾数据库
       </h2>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" placeholder="请输入用户名" autocomplete="off" prefix-icon="el-icon-user-solid" />

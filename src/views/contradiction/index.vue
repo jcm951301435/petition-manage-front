@@ -14,7 +14,12 @@
       <div style="margin-top: 15px">
         <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="姓名：">
-            <el-input v-model="queryParams.applyName" class="input-width" placeholder="姓名" />
+            <!-- <el-input v-model="queryParams.applyName" class="input-width" placeholder="姓名" /> -->
+            <el-select v-model="queryParams.applyName" multiple filterable remote reserve-keyword
+                       placeholder="请输入关键词" :remote-method="applyNameRemote" :loading="applyNameLoading"
+            >
+              <el-option v-for="item in applyNameOptions" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
           </el-form-item>
           <el-form-item label="责任单位：">
             <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" />
@@ -27,6 +32,19 @@
       <span>信访列表</span>
       <el-button :disabled="!$checkMenuShow('contradiction:add')" type="primary" class="btn-add" @click="handleAdd()" style="margin-left: 20px">
         添加
+      </el-button>
+      <el-upload ref="uploadBtn" :before-upload="importExcelBeforeUpload" :show-file-list="false" :action="importExcelAction" :http-request="importExcelUpload"
+                 style="display: inline-block; margin-left: 20px;"
+      >
+        <el-button :disabled="!$checkMenuShow('contradiction:import')" slot="trigger" type="success">
+          导入Excel
+        </el-button>
+      </el-upload>
+      <el-button :disabled="!$checkMenuShow('contradiction:exportWord')" type="success" class="btn-add" @click="handleExportWord()" style="margin-left: 20px">
+        导出查询结果(word)
+      </el-button>
+      <el-button :disabled="!$checkMenuShow('contradiction:export')" type="success" class="btn-add" @click="handleExport()" style="margin-left: 20px">
+        打印查询结果
       </el-button>
     </el-card>
     <div class="table-container">
@@ -96,7 +114,10 @@ export default {
       queryParams: Object.assign({}, defaultQueryParams),
       listLoading: false,
       list: [],
-      listTotal: null
+      listTotal: null,
+      applyNameLoading: false,
+      applyNameOptions: [],
+      importExcelAction: ''
     }
   },
   computed: {
@@ -151,6 +172,28 @@ export default {
     handleAdd () {
       this.$router.push({ path: '/petition/contradictionAdd' })
     },
+    handleExport () {
+      contradictionApi.exportExcel(this.queryParamsTrans, 'pdf')
+    },
+    handleExportWord () {
+      contradictionApi.exportExcel(this.queryParamsTrans, 'doc')
+    },
+    importExcelUpload (option) {
+      contradictionApi.importExcel(option).then(response => {
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+        this.getList()
+      })
+    },
+    importExcelBeforeUpload (file) {
+      let isRightSize = file.size / 1024 / 1024 < 1024
+      if (!isRightSize) {
+        this.$message.error('文件大小超过 1024MB')
+      }
+      return isRightSize
+    },
     getList () {
       this.listLoading = true
       contradictionApi.fetchList(this.queryParamsTrans).then((response) => {
@@ -166,6 +209,13 @@ export default {
     handlePageCurrentChange (val) {
       this.queryParams.pageNum = val
       this.getList()
+    },
+    applyNameRemote (query) {
+      if (query !== '') {
+          this.applyNameLoading = true
+          
+          this.applyNameLoading = false
+      }
     }
   }
 }

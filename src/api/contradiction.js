@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { importService } from '@/utils/request'
 
 export function fetchList (params) {
   return request({
@@ -31,9 +31,25 @@ export function remove (id) {
   })
 }
 
+export function exportExcel (data, type) {
+  return request({
+    url: '/petitionContradiction/export',
+    method: 'post',
+    data: data,
+    params: { type: type },
+    responseType: 'blob'
+  })
+}
+
+export function importExcel (option) {
+  return importService('/petitionContradiction/import', option)
+}
+
 export default {
   fetchList,
   create,
   update,
-  remove
+  remove,
+  exportExcel,
+  importExcel
 }

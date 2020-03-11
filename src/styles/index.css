@@ -18,6 +18,10 @@ a, a:focus, a:hover {
   line-height: 30px;
 }
 
+.el-main {
+  overflow: visible
+}
+
 /* .current-row>td {
   background: #55d311 !important;
 } */
