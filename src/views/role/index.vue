@@ -36,7 +36,7 @@
         <el-table-column prop="description" label="描述" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="250">
+        <el-table-column label="操作" width="250" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('role:addPermission')" @click="handlePemissionRelation(scope.$index, scope.row)" type="primary" size="small">
               授权菜单
@@ -80,13 +80,17 @@
     <el-dialog v-loading="pemissionListLoading" :title="'授权菜单'" :visible.sync="pemissionDialogVisible" :close-on-click-modal="false"
                width="40%"
     >
-      <el-tree :props="pemissionProps" :data="pemissionList" node-key="id" :check-strictly="true"
-               show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
-      />
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="pemissionDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handlePemissionDialogConfirm()" size="small">确 定</el-button>
-      </span>
+      <div style="height: 350px">
+        <el-scrollbar class="role_scrollbar" style="height: 100%">
+          <el-tree :props="pemissionProps" :data="pemissionList" node-key="id" :check-strictly="true"
+                  show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
+          />
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="pemissionDialogVisible = false" size="small">取 消</el-button>
+            <el-button type="primary" @click="handlePemissionDialogConfirm()" size="small">确 定</el-button>
+          </span>
+        </el-scrollbar>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -262,4 +266,30 @@ export default {
 </script>
 
 <style scoped>
+/* .role_scrollbar .el-scrollbar__wrap {
+  overflow-x: hidden;
+} */
+/* .role_scrollbar {
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  overflow: hidden;
+}
+.role_scrollbar .el-dialog {
+  margin: 0 auto !important;
+  height: 90%;
+  overflow: hidden;
+}
+
+.role_scrollbar .el-dialog .el-dialog__body {
+  position: absolute;
+  left: 0;
+  top: 54px;
+  bottom: 0;
+  right: 0;
+  padding: 0;
+  z-index: 1;
+  overflow: hidden;
+  overflow-y: auto;
+} */
 </style>

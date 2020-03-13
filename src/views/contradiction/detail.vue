@@ -1,7 +1,7 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="loading" style="width: 900px">
     <el-row :gutter="10">
-      <el-col :span="16">
+      <el-col>
         <el-row>
           <el-form ref="contradictionForm" :label-position="'right'" :model="contradictionForm" :rules="rules" size="medium"
                    label-width="100px" :disabled="isQuery"
@@ -44,7 +44,7 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="7">
+                <el-col :span="8">
                   <el-form-item label="信访类型" prop="petitionTypes">
                     <el-checkbox-group v-model="contradictionForm.petitionTypes">
                       <el-checkbox v-for="item in petitionTypeOptions" :key="item.listKey" :label="item.listKey">
@@ -141,12 +141,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label-width="160px" label="是否集访、人数" prop="teamPetitionState">
+                  <el-form-item label-width="160px" label="是否集访" prop="teamPetitionState">
                     <el-switch v-model="contradictionForm.teamPetitionState" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="" prop="teamPetitionCount">
+                  <el-form-item label="集访人数" prop="teamPetitionCount">
                     <el-input-number v-model="contradictionForm.teamPetitionCount" />
                   </el-form-item>
                 </el-col>
@@ -158,20 +158,22 @@
             </el-tag>
             <el-card>
               <el-row>
-                <el-col :span="8">
+                <el-col :span="10">
                   <el-form-item label-width="120px" label="首次信访时间" prop="firstPetitionTime">
                     <el-date-picker v-model="contradictionForm.firstPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date"
                                     placeholder="请选择首次信访时间"
                     />
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="10">
                   <el-form-item label-width="120px" label="末次信访时间" prop="lastPetitionTime">
                     <el-date-picker v-model="contradictionForm.lastPetitionTime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" align="right" type="date"
                                     placeholder="请选择末次信访时间"
                     />
                   </el-form-item>
                 </el-col>
+              </el-row>
+              <el-row>
                 <el-col :span="8">
                   <el-form-item label="易化解程度" prop="resolveLevel">
                     <el-select v-model="contradictionForm.resolveLevel" placeholder="请选择易化解程度">
@@ -180,13 +182,13 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-col :span="18">
+              <el-col :span="23">
                 <el-button type="success" @click.prevent="addContradictionContent()">
                   新增诉求概述
                 </el-button>
               </el-col>
               <el-row>
-                <el-col :span="18">
+                <el-col :span="23">
                   <el-form-item v-for="(item, index) in contradictionForm.contradictionContent" :key="index" label-width="120px" :label="'信访人诉求概述' + (index < 1 ? '' : index)">
                     <el-input v-model="contradictionForm.contradictionContent[index].contradictionContent"
                               type="textarea" placeholder="请输入信访人诉求概述" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '80%'}"
@@ -198,13 +200,13 @@
                   <el-divider />
                 </el-col>
               </el-row>
-              <el-col :span="18">
+              <el-col :span="23">
                 <el-button type="success" @click.prevent="addContradictionResolveProcess()">
                   新增化解过程
                 </el-button>
               </el-col>
               <el-row>
-                <el-col :span="18">
+                <el-col :span="23">
                   <el-form-item v-for="(item, index) in contradictionForm.contradictionResolveProcess" :key="index" label-width="120px" :label="'化解过程简述' + (index < 1 ? '' : index)">
                     <el-input v-model="contradictionForm.contradictionResolveProcess[index].resolveContent"
                               type="textarea" placeholder="请输入化解过程简述" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '80%'}"
@@ -402,7 +404,9 @@ export default {
     getDetail (id) {
       this.loading = true
       contradictionApi.fetchList({
-        id: id
+        data: {
+          id: id
+        }
       }).then(response => {
         this.loading = false
         const list = response.data.list

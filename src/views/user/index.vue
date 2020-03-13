@@ -45,7 +45,7 @@
         <el-table-column prop="roleName" label="角色" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('user:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改

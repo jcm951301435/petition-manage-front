@@ -41,7 +41,7 @@
         <!-- <el-table-column prop="type" label="类型" width="160" /> -->
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="250" align="center">
+        <el-table-column label="操作" width="250" align="center" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('permission:add')" @click="handleAddChild(scope.$index, scope.row)" type="primary" size="small">
               添加下级

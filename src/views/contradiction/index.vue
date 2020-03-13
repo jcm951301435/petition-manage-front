@@ -14,15 +14,50 @@
       <div style="margin-top: 15px">
         <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="姓名：">
-            <!-- <el-input v-model="queryParams.applyName" class="input-width" placeholder="姓名" /> -->
             <el-select v-model="queryParams.applyName" multiple filterable remote reserve-keyword
                        placeholder="请输入关键词" :remote-method="applyNameRemote" :loading="applyNameLoading"
             >
               <el-option v-for="item in applyNameOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
+          <el-form-item label="性别:">
+            <el-select v-model="queryParams.applySex" clearable placeholder="请选择">
+              <el-option v-for="item in applySexOptions" :key="item.id" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="责任单位：">
-            <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" />
+            <!-- <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" /> -->
+            <el-select v-model="queryParams.responsibleCompany" multiple filterable remote reserve-keyword
+                       placeholder="请输入关键词" :remote-method="responsibleCompanyRemote" :loading="responsibleCompanyLoading"
+            >
+              <el-option v-for="item in responsibleCompanyOptions" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="核查终结">
+            <el-switch v-model="queryParams.checkType" />
+          </el-form-item>
+          <el-form-item label="是否集访">
+            <el-switch v-model="queryParams.teamPetitionState" />
+          </el-form-item>
+          <el-form-item label="易化解程度:">
+            <el-select v-model="queryParams.resolveLevel" clearable placeholder="请选择">
+              <el-option v-for="item in resolveLevelOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="信访类型:">
+            <el-select v-model="queryParams.petitionType" clearable placeholder="请选择">
+              <el-option v-for="item in petitionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="目的分类:">
+            <el-select v-model="queryParams.purposeType" clearable placeholder="请选择">
+              <el-option v-for="item in purposeTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="突出信访矛盾类别:">
+            <el-select v-model="queryParams.contradictionType" clearable placeholder="请选择">
+              <el-option v-for="item in contradictionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+            </el-select>
           </el-form-item>
         </el-form>
       </div>
@@ -40,6 +75,9 @@
           导入Excel
         </el-button>
       </el-upload>
+      <el-button @click="handleImportTemplate()" type="success" style="margin-left: 20px">
+        Excel模板下载
+      </el-button>
       <el-button :disabled="!$checkMenuShow('contradiction:exportWord')" type="success" class="btn-add" @click="handleExportWord()" style="margin-left: 20px">
         导出查询结果(word)
       </el-button>
@@ -66,7 +104,7 @@
         <el-table-column prop="purposeName" label="目的分类" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="250">
+        <el-table-column label="操作" width="250" fixed="right">
           <template slot-scope="scope">
             <el-button @click="handleToDetail(scope.$index, scope.row)" type="primary" size="small">
               查看
@@ -96,10 +134,19 @@
 
 <script>
 import contradictionApi from '@/api/contradiction'
+import listApi from '@/api/list'
+import companyApi from '@/api/company'
 
 const defaultQueryParams = {
-  applyName: '',
-  responsibleCompany: '',
+  applyName: [],
+  responsibleCompany: [],
+  applySex: '',
+  checkType: false,
+  teamPetitionState: false,
+  resolveLevel: null,
+  petitionType: null,
+  purposeType: null,
+  contradictionType: null,
   pageObj: {
     pageNum: 1,
     pageSize: 10
@@ -117,6 +164,17 @@ export default {
       listTotal: null,
       applyNameLoading: false,
       applyNameOptions: [],
+      responsibleCompanyLoading: false,
+      responsibleCompanyOptions: [],
+      resolveLevelOptions: [],
+      petitionTypeOptions: [],
+      purposeTypeOptions: [],
+      contradictionTypeOptions: [],
+      applySexOptions: [{
+        id: '1', label: '男', value: '1'
+      }, {
+        id: '0', label: '女', value: '0'
+      }],
       importExcelAction: ''
     }
   },
@@ -126,20 +184,68 @@ export default {
     },
     queryParamsTrans () {
       const paramsTrans = {}
-      const { applyName, responsibleCompany, pageObj } = this.queryParams
+      const {
+        applyName,
+        responsibleCompany,
+        applySex,
+        checkType,
+        teamPetitionState,
+        resolveLevel,
+        petitionType,
+        purposeType,
+        contradictionType,
+        pageObj
+      } = this.queryParams
       if (applyName) {
         paramsTrans.applyName = applyName
       }
       if (responsibleCompany) {
         paramsTrans.responsibleCompany = responsibleCompany
       }
-      paramsTrans.pageNum = pageObj.pageNum
-      paramsTrans.pageSize = pageObj.pageSize
-      return paramsTrans
+      if (applySex) {
+        paramsTrans.applySex = applySex
+      }
+      if (checkType != null) {
+        paramsTrans.checkType = checkType
+      }
+      if (teamPetitionState != null) {
+        paramsTrans.teamPetitionState = teamPetitionState
+      }
+      if (resolveLevel) {
+        paramsTrans.resolveLevel = resolveLevel
+      }
+      if (petitionType) {
+        paramsTrans.petitionType = petitionType
+      }
+      if (purposeType) {
+        paramsTrans.purposeType = purposeType
+      }
+      if (contradictionType) {
+        paramsTrans.contradictionType = contradictionType
+      }
+      const params = {}
+      params.pageNum = pageObj.pageNum
+      params.pageSize = pageObj.pageSize
+      return {
+        data: paramsTrans,
+        params: params
+      }
     }
   },
   created () {
     this.getList()
+    this.getListByType('resolveLevel').then(response => {
+      this.resolveLevelOptions = response.data.list || []
+    })
+    this.getListByType('petitionType').then(response => {
+      this.petitionTypeOptions = response.data.list || []
+    })
+    this.getListByType('purposeType').then(response => {
+      this.purposeTypeOptions = response.data.list || []
+    })
+    this.getListByType('contradictionType').then(response => {
+      this.contradictionTypeOptions = response.data.list || []
+    })
   },
   methods: {
     handleSearchList () {
@@ -178,6 +284,9 @@ export default {
     handleExportWord () {
       contradictionApi.exportExcel(this.queryParamsTrans, 'doc')
     },
+    handleImportTemplate () {
+      contradictionApi.ImportTemplate('contradictionTemplate')
+    },
     importExcelUpload (option) {
       contradictionApi.importExcel(option).then(response => {
         this.$message({
@@ -210,11 +319,47 @@ export default {
       this.queryParams.pageNum = val
       this.getList()
     },
+    getListByType (type) {
+      return listApi.fetchList({
+        listType: type
+      })
+    },
     applyNameRemote (query) {
       if (query !== '') {
-          this.applyNameLoading = true
-          
+        this.applyNameLoading = true
+        contradictionApi.applyNameList(query).then((response) => {
+          const data = response.data
+          const options = []
+          for (var i in data) {
+            options.push({
+              label: data[i],
+              value: data[i]
+            })
+          }
+          this.applyNameOptions = options
           this.applyNameLoading = false
+        }).catch(() => {
+          this.applyNameLoading = false
+        })
+      }
+    },
+    responsibleCompanyRemote (query) {
+      if (query !== '') {
+        this.responsibleCompanyLoading = true
+        companyApi.fetchList({ name: query }).then(response => {
+          const options = []
+          const list = response.data.list
+          for (var i in list) {
+            options.push({
+              label: list[i].name,
+              value: list[i].id
+            })
+          }
+          this.responsibleCompanyOptions = options
+          this.responsibleCompanyLoading = false
+        }).catch(() => {
+          this.responsibleCompanyLoading = false
+        })
       }
     }
   }

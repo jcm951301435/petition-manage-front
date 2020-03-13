@@ -40,7 +40,7 @@
         <el-table-column prop="contactTelephone" label="联系方式" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('company:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
