@@ -18,6 +18,16 @@ a, a:focus, a:hover {
   line-height: 30px;
 }
 
+.el-header {
+  background-color: #B3C0D1;
+  color: #333;
+  line-height: 60px;
+}
+
+/* .role_scrollbar > .el-scrollbar__wrap {
+  overflow-x: hidden;
+} */
+
 /* .el-main {
   overflow: visible
 } */

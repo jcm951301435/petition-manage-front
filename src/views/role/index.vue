@@ -266,30 +266,4 @@ export default {
 </script>
 
 <style scoped>
-/* .role_scrollbar .el-scrollbar__wrap {
-  overflow-x: hidden;
-} */
-/* .role_scrollbar {
-  display: flex;
-  justify-content: center;
-  align-items: Center;
-  overflow: hidden;
-}
-.role_scrollbar .el-dialog {
-  margin: 0 auto !important;
-  height: 90%;
-  overflow: hidden;
-}
-
-.role_scrollbar .el-dialog .el-dialog__body {
-  position: absolute;
-  left: 0;
-  top: 54px;
-  bottom: 0;
-  right: 0;
-  padding: 0;
-  z-index: 1;
-  overflow: hidden;
-  overflow-y: auto;
-} */
 </style>

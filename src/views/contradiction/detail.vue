@@ -128,7 +128,21 @@
                     <el-input v-model="contradictionForm.enterBeijingState" placeholder="请输入近年进京情况" clearable :style="{width: '100%'}" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="10">
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label-width="160px" label="是否集访" prop="teamPetitionState">
+                    <el-switch v-model="contradictionForm.teamPetitionState" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="集访人数" prop="teamPetitionCount">
+                    <el-input-number v-model="contradictionForm.teamPetitionCount" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
                   <el-form-item label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="fileList">
                     <el-upload ref="uploadBtn" :file-list="fileList" :action="fileListAction" :before-upload="fileListBeforeUpload"
                                :data="{ id: idComputed }" :before-remove="handleFileListRemove" :on-error="handleFileUploadError"
@@ -138,16 +152,6 @@
                         {{ isEdit ? '点击上传' : '保存后点击上传' }}
                       </el-button>
                     </el-upload>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label-width="160px" label="是否集访" prop="teamPetitionState">
-                    <el-switch v-model="contradictionForm.teamPetitionState" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="集访人数" prop="teamPetitionCount">
-                    <el-input-number v-model="contradictionForm.teamPetitionCount" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -182,11 +186,13 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-col :span="23">
-                <el-button type="success" @click.prevent="addContradictionContent()">
-                  新增诉求概述
-                </el-button>
-              </el-col>
+              <el-row>
+                <el-col :span="23">
+                  <el-button type="success" @click.prevent="addContradictionContent()">
+                    新增诉求概述
+                  </el-button>
+                </el-col>
+              </el-row>
               <el-row>
                 <el-col :span="23">
                   <el-form-item v-for="(item, index) in contradictionForm.contradictionContent" :key="index" label-width="120px" :label="'信访人诉求概述' + (index < 1 ? '' : index)">
@@ -200,11 +206,13 @@
                   <el-divider />
                 </el-col>
               </el-row>
-              <el-col :span="23">
-                <el-button type="success" @click.prevent="addContradictionResolveProcess()">
-                  新增化解过程
-                </el-button>
-              </el-col>
+              <el-row>
+                <el-col :span="23">
+                  <el-button type="success" @click.prevent="addContradictionResolveProcess()">
+                    新增化解过程
+                  </el-button>
+                </el-col>
+              </el-row>
               <el-row>
                 <el-col :span="23">
                   <el-form-item v-for="(item, index) in contradictionForm.contradictionResolveProcess" :key="index" label-width="120px" :label="'化解过程简述' + (index < 1 ? '' : index)">

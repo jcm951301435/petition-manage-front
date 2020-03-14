@@ -42,13 +42,16 @@
           导入Excel
         </el-button>
       </el-upload>
+      <el-button @click="handleImportTemplate()" type="success" style="margin-left: 20px">
+        Excel模板下载
+      </el-button>
       <el-button :disabled="!$checkMenuShow('troubleshoot:export')" type="success" class="btn-add" @click="handleExport()" style="margin-left: 20px">
         导出查询结果
       </el-button>
     </el-card>
     <div class="table-container">
       <el-table :data="list" border stripe highlight-current-row v-loading="listLoading"
-                style="width: 100%" ref="troubleshootTable" row-key="id"
+                style="width: 100%" ref="troubleshootTable" row-key="id" max-height="500px"
       >
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
@@ -139,6 +142,7 @@
 <script>
 import troubleshootApi from '@/api/troubleshoot'
 import companyApi from '@/api/company'
+import contradictionApi from '@/api/contradiction'
 
 const defaultQueryParams = {
   companyName: '',
@@ -261,6 +265,9 @@ export default {
       troubleshootApi.exportExcel(this.queryParamsTrans)
     },
     handlerEditDialogOpen () {
+    },
+    handleImportTemplate () {
+      contradictionApi.ImportTemplate('troubleshootTemplate')
     },
     handleEditDialogConfirm () {
       this.$refs.editForm.validate((valid) => {

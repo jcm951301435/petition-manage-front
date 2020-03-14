@@ -104,7 +104,7 @@
         <el-table-column prop="purposeName" label="目的分类" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="250" fixed="right">
+        <el-table-column label="操作" width="250"  fixed="right">
           <template slot-scope="scope">
             <el-button @click="handleToDetail(scope.$index, scope.row)" type="primary" size="small">
               查看

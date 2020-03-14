@@ -13,7 +13,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    console.log(config)
     return config
   },
   error => {
