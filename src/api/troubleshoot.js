@@ -31,11 +31,14 @@ export function remove (id) {
   })
 }
 
-export function exportExcel (data) {
+export function exportExcel (data, dataType) {
   return exportService({
     url: '/petitionTroubleshoot/export',
     method: 'post',
-    data: data
+    data: data,
+    params: {
+      dataType: dataType
+    }
   })
 }
 

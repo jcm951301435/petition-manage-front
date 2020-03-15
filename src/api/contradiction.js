@@ -39,12 +39,15 @@ export function applyNameList (applyName) {
   })
 }
 
-export function exportFile (data, type) {
+export function exportFile (options, exportType, dataType) {
+  const params = options.params
+  params.exportType = exportType
+  params.dataType = dataType
   return exportService({
     url: '/petitionContradiction/export',
     method: 'post',
-    data: data,
-    params: { type: type }
+    data: options.data,
+    params: params
   })
 }
 

@@ -45,13 +45,24 @@
       <el-button @click="handleImportTemplate()" type="success" style="margin-left: 20px">
         Excel模板下载
       </el-button>
-      <el-button :disabled="!$checkMenuShow('troubleshoot:export')" type="success" class="btn-add" @click="handleExport()" style="margin-left: 20px">
-        导出查询结果
-      </el-button>
+      <el-dropdown :disabled="!$checkMenuShow('troubleshoot:export')" trigger="click" style="margin-left: 20px" @command="handleExport">
+        <el-button type="success">
+          导出
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item :command="'query'">
+            按查询条件
+          </el-dropdown-item>
+          <el-dropdown-item :command="'select'">
+            按勾选记录
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-card>
     <div class="table-container">
       <el-table :data="list" border stripe highlight-current-row v-loading="listLoading"
-                style="width: 100%" ref="troubleshootTable" row-key="id" max-height="500px"
+                style="width: 100%" ref="troubleshootTable" row-key="id"
       >
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
@@ -64,9 +75,9 @@
         <el-table-column prop="contradictionLevel" label="矛盾级别" width="100" />
         <el-table-column prop="teamPetitionCount" label="涉及人数" width="100" />
         <el-table-column prop="responsibleCompany" label="责任企业" width="160" />
-        <el-table-column prop="content" label="信访主要诉求" width="160" />
-        <el-table-column prop="contradictionType" label="矛盾类型" width="160" />
-        <el-table-column prop="resolveProcess" label="主要措施" width="160" />
+        <el-table-column prop="content" label="信访主要诉求" width="200" :show-overflow-tooltip="true" />
+        <el-table-column prop="contradictionType" label="矛盾类型" width="100" />
+        <el-table-column prop="resolveProcess" label="主要措施" width="200" :show-overflow-tooltip="true" />
         <el-table-column prop="status" label="状态" width="100" />
         <el-table-column prop="remarks" label="备注" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
@@ -261,8 +272,30 @@ export default {
       this.isEdit = false
       this.edit = Object.assign({}, defaultEdit)
     },
-    handleExport () {
-      troubleshootApi.exportExcel(this.queryParamsTrans)
+    handleExport (dataType) {
+      // troubleshootApi.exportExcel(this.queryParamsTrans)
+      const params = Object.assign({}, this.queryParamsTrans)
+      if (dataType === 'select') {
+        const selectTion = this.$refs['troubleshootTable']['selection']
+        if (selectTion && selectTion.length > 0) {
+          var idList = []
+          for (var i in selectTion) {
+            const idTemp = selectTion[i].id
+            if (idTemp) {
+              idList.push(idTemp)
+            }
+          }
+          params.idList = idList
+          troubleshootApi.exportExcel(params, dataType)
+        } else {
+          this.$message({
+            message: '请先勾选数据',
+            type: 'warning'
+          })
+        }
+      } else {
+        troubleshootApi.exportExcel(params, dataType)
+      }
     },
     handlerEditDialogOpen () {
     },

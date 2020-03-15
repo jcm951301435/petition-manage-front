@@ -78,12 +78,34 @@
       <el-button @click="handleImportTemplate()" type="success" style="margin-left: 20px">
         Excel模板下载
       </el-button>
-      <el-button :disabled="!$checkMenuShow('contradiction:exportWord')" type="success" class="btn-add" @click="handleExportWord()" style="margin-left: 20px">
-        导出查询结果(word)
-      </el-button>
-      <el-button :disabled="!$checkMenuShow('contradiction:export')" type="success" class="btn-add" @click="handleExport()" style="margin-left: 20px">
-        打印查询结果
-      </el-button>
+      <el-dropdown :disabled="!$checkMenuShow('contradiction:exportWord')" trigger="click" style="margin-left: 20px" @command="handleExportWord">
+        <el-button type="success">
+          导出(word)
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item :command="'query'">
+            按查询条件
+          </el-dropdown-item>
+          <el-dropdown-item :command="'select'">
+            按勾选记录
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-dropdown :disabled="!$checkMenuShow('contradiction:export')" trigger="click" style="margin-left: 20px" @command="handleExport">
+        <el-button type="success">
+          打印
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item :command="'query'">
+            按查询条件
+          </el-dropdown-item>
+          <el-dropdown-item :command="'select'">
+            按勾选记录
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-card>
     <div class="table-container">
       <el-table :data="list" border stripe highlight-current-row v-loading="listLoading"
@@ -278,11 +300,35 @@ export default {
     handleAdd () {
       this.$router.push({ path: '/petition/contradictionAdd' })
     },
-    handleExport () {
-      contradictionApi.exportFile(this.queryParamsTrans, 'pdf')
+    handleExport (dataType) {
+      this.basicExportFile('pdf', dataType)
     },
-    handleExportWord () {
-      contradictionApi.exportFile(this.queryParamsTrans, 'doc')
+    handleExportWord (dataType) {
+      this.basicExportFile('doc', dataType)
+    },
+    basicExportFile (exportType, dataType) {
+      const params = Object.assign({}, this.queryParamsTrans)
+      if (dataType === 'select') {
+        const selectTion = this.$refs['contradictionTable']['selection']
+        if (selectTion && selectTion.length > 0) {
+          var idList = []
+          for (var i in selectTion) {
+            const idTemp = selectTion[i].id
+            if (idTemp) {
+              idList.push(idTemp)
+            }
+          }
+          params.data.idList = idList
+          contradictionApi.exportFile(params, exportType, dataType)
+        } else {
+          this.$message({
+            message: '请先勾选数据',
+            type: 'warning'
+          })
+        }
+      } else {
+        contradictionApi.exportFile(params, exportType, dataType)
+      }
     },
     handleImportTemplate () {
       contradictionApi.importTemplate('contradictionTemplate')
