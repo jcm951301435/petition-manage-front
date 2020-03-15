@@ -1,4 +1,4 @@
-import request, { importService } from '@/utils/request'
+import request, { importService, exportService } from '@/utils/request'
 
 export function fetchList (params) {
   return request({
@@ -39,21 +39,19 @@ export function applyNameList (applyName) {
   })
 }
 
-export function exportExcel (data, type) {
-  return request({
+export function exportFile (data, type) {
+  return exportService({
     url: '/petitionContradiction/export',
     method: 'post',
     data: data,
-    params: { type: type },
-    responseType: 'blob'
+    params: { type: type }
   })
 }
 
-export function ImportTemplate (name) {
-  return request({
+export function importTemplate (name) {
+  return exportService({
     url: '/petitionContradiction/importTemplate/' + name,
-    method: 'post',
-    responseType: 'blob'
+    method: 'post'
   })
 }
 
@@ -67,7 +65,7 @@ export default {
   update,
   remove,
   applyNameList,
-  exportExcel,
+  exportFile,
   importExcel,
-  ImportTemplate
+  importTemplate
 }

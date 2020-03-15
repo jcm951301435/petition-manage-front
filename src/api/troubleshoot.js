@@ -1,4 +1,4 @@
-import request, { importService } from '@/utils/request'
+import request, { importService, exportService } from '@/utils/request'
 
 export function fetchList (params) {
   return request({
@@ -32,11 +32,10 @@ export function remove (id) {
 }
 
 export function exportExcel (data) {
-  return request({
+  return exportService({
     url: '/petitionTroubleshoot/export',
     method: 'post',
-    data: data,
-    responseType: 'blob'
+    data: data
   })
 }
 

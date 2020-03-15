@@ -95,8 +95,15 @@ export function importService (url, option) {
       }
     },
     method: 'post',
-    data: formData
+    data: formData,
+    timeout: 0
   })
+}
+
+export function exportService (config) {
+  config.responseType = 'blob'
+  config.timeout = 0
+  return service(config)
 }
 
 export default service

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin: 20px">
     <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search" />

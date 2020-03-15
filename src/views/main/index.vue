@@ -1,7 +1,7 @@
 <template>
   <el-container direction="horizontal">
     <aside-bar />
-    <el-container direction="vertical" style="width: 100%">
+    <el-container direction="vertical" style="width: 100%; height:100%;">
       <nav-bar />
       <el-main>
         <transition

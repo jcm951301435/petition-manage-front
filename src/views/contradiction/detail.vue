@@ -144,12 +144,12 @@
               <el-row>
                 <el-col :span="24">
                   <el-form-item label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="fileList">
-                    <el-upload ref="uploadBtn" :file-list="fileList" :action="fileListAction" :before-upload="fileListBeforeUpload"
+                    <el-upload :disabled="!isEdit" ref="uploadBtn" :file-list="fileList" :action="fileListAction" :before-upload="fileListBeforeUpload"
                                :data="{ id: idComputed }" :before-remove="handleFileListRemove" :on-error="handleFileUploadError"
                                :on-success="handleFileUploadSuccess" :on-preview="handleFileListDownLoad"
                     >
                       <el-button :disabled="!isEdit" size="small" type="primary" icon="el-icon-upload">
-                        {{ isEdit ? '点击上传' : '保存后点击上传' }}
+                        {{ isEdit ? '点击上传' : '请先保存后点击上传' }}
                       </el-button>
                     </el-upload>
                   </el-form-item>
@@ -288,10 +288,10 @@
               </el-col>
             </el-card>
             <el-divider />
-            <el-col :span="24">
+            <el-col v-show="isEdit || isAdd" :span="24">
               <el-form-item size="large">
                 <el-button type="primary" @click="submitForm">
-                  提交
+                  {{ isEdit ? '保存' : '提交' }}
                 </el-button>
                 <!-- <el-button @click="resetForm">
                   重置
@@ -346,6 +346,9 @@ export default {
     },
     idComputed () {
       return this.$route.query.id
+    },
+    isAdd () {
+      return this.$route.name === 'contradictionAdd'
     },
     isEdit () {
       return this.$route.name === 'contradictionUpdate'

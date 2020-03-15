@@ -24,6 +24,11 @@ a, a:focus, a:hover {
   line-height: 60px;
 }
 
+.el-main {
+  padding: 0px;
+  /* overflow: hidden; */
+}
+
 /* .role_scrollbar > .el-scrollbar__wrap {
   overflow-x: hidden;
 } */

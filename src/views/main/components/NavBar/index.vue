@@ -45,7 +45,7 @@ export default {
     }),
     handleLogout () {
       this.logout().then(() => {
-        this.$router.push({path: '/login'})
+        this.$router.push({ path: '/login' })
       })
     }
   }

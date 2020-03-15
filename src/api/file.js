@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { importService, exportService } from '@/utils/request'
 
 export function fetchList (params) {
   return request({
@@ -16,16 +16,19 @@ export function remove (id) {
 }
 
 export function download (file) {
-  return request({
+  return exportService({
     url: '/sysFile/download/' + file.id,
     method: 'post',
-    responseType: 'blob',
     data: file
   })
+}
+export function uploadMainImage (option) {
+  return importService('/sysFile/uploadMainImage', option)
 }
 
 export default {
   remove,
   fetchList,
-  download
+  download,
+  uploadMainImage
 }

@@ -267,7 +267,7 @@ export default {
     handlerEditDialogOpen () {
     },
     handleImportTemplate () {
-      contradictionApi.ImportTemplate('troubleshootTemplate')
+      contradictionApi.importTemplate('troubleshootTemplate')
     },
     handleEditDialogConfirm () {
       this.$refs.editForm.validate((valid) => {

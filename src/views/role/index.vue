@@ -83,14 +83,14 @@
       <div style="height: 350px">
         <el-scrollbar class="role_scrollbar" style="height: 100%">
           <el-tree :props="pemissionProps" :data="pemissionList" node-key="id" :check-strictly="true"
-                  show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
+                   show-checkbox :default-expand-all="true" :default-checked-keys="pemissionCheckId" ref="pemissionTree"
           />
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="pemissionDialogVisible = false" size="small">取 消</el-button>
-            <el-button type="primary" @click="handlePemissionDialogConfirm()" size="small">确 定</el-button>
-          </span>
         </el-scrollbar>
       </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="pemissionDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handlePemissionDialogConfirm()" size="small">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>

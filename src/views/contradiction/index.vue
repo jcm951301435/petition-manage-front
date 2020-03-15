@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin: 20px">
     <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search" />
@@ -104,7 +104,7 @@
         <el-table-column prop="purposeName" label="目的分类" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="250"  fixed="right">
+        <el-table-column label="操作" width="250" fixed="right">
           <template slot-scope="scope">
             <el-button @click="handleToDetail(scope.$index, scope.row)" type="primary" size="small">
               查看
@@ -279,13 +279,13 @@ export default {
       this.$router.push({ path: '/petition/contradictionAdd' })
     },
     handleExport () {
-      contradictionApi.exportExcel(this.queryParamsTrans, 'pdf')
+      contradictionApi.exportFile(this.queryParamsTrans, 'pdf')
     },
     handleExportWord () {
-      contradictionApi.exportExcel(this.queryParamsTrans, 'doc')
+      contradictionApi.exportFile(this.queryParamsTrans, 'doc')
     },
     handleImportTemplate () {
-      contradictionApi.ImportTemplate('contradictionTemplate')
+      contradictionApi.importTemplate('contradictionTemplate')
     },
     importExcelUpload (option) {
       contradictionApi.importExcel(option).then(response => {
