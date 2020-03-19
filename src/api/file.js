@@ -22,13 +22,19 @@ export function download (file) {
     data: file
   })
 }
+
 export function uploadMainImage (option) {
   return importService('/sysFile/uploadMainImage', option)
+}
+
+export function uploadFile (option) {
+  return importService('/sysFile/upload', option)
 }
 
 export default {
   remove,
   fetchList,
   download,
-  uploadMainImage
+  uploadMainImage,
+  uploadFile
 }
