@@ -1,22 +1,24 @@
 <template>
-  <el-card class="login-form-layout">
-    <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm">
-      <h2 class="login-title">
-        市国资信访矛盾数据库
-      </h2>
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" placeholder="请输入用户名" autocomplete="off" prefix-icon="el-icon-user-solid" />
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input type="password" placeholder="请输入密码" v-model="loginForm.password" autocomplete="off" prefix-icon="el-icon-lock" />
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" style="width: 100%" type="primary" @click="handleLogin()">
-          登录
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+  <div class="home-div" :style="{backgroundImage: 'url(' + img + ')'}">
+    <el-card class="login-form-layout">
+      <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm">
+        <h2 class="login-title">
+          小拾数据库
+        </h2>
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" placeholder="请输入用户名" autocomplete="off" prefix-icon="el-icon-user-solid" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input type="password" placeholder="请输入密码" v-model="loginForm.password" autocomplete="off" prefix-icon="el-icon-lock" />
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" style="width: 100%" type="primary" @click="handleLogin()">
+            登录
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -56,7 +58,8 @@ export default {
           trigger: 'blur'
         }]
       },
-      loading: false
+      loading: false,
+      img: 'sysFile/showMainImage'
     }
   },
   computed: {
@@ -96,5 +99,11 @@ export default {
 
   .login-title {
     text-align: center;
+  }
+
+  .home-div {
+    width: 100%;
+    height: 100%;
+    background-repeat: round;
   }
 </style>

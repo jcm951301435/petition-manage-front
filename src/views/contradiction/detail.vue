@@ -151,7 +151,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="24">
-                      <el-form-item v-show="!isQuery" label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="fileList">
+                      <el-form-item label-width="300px" label="附件上传（表格、文字、视频影音等）" prop="fileList">
                         <el-upload ref="uploadBtn" :file-list="fileList" :action="fileListAction" :before-upload="fileListBeforeUpload"
                                    :data="{ id: idComputed }" :before-remove="handleFileListRemove" :on-error="handleFileUploadError"
                                    :on-success="handleFileUploadSuccess" :on-preview="handleFileListDownLoad" :http-request="handleFileUpload"
@@ -348,7 +348,7 @@ export default {
       rules: {},
       loading: false,
       fileListAction: '/sysFile/upload',
-      activeNames: ['1', '2']
+      activeNames: ['1', '2', '3']
     }
   },
   computed: {

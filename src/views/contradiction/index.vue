@@ -12,54 +12,65 @@
         </el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
-          <el-form-item label="姓名：">
-            <el-select v-model="queryParams.applyName" multiple filterable remote reserve-keyword
-                       placeholder="请输入关键词" :remote-method="applyNameRemote" :loading="applyNameLoading"
-            >
-              <el-option v-for="item in applyNameOptions" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="性别:">
-            <el-select v-model="queryParams.applySex" clearable placeholder="请选择">
-              <el-option v-for="item in applySexOptions" :key="item.id" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="责任单位：">
-            <!-- <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" /> -->
-            <el-select v-model="queryParams.responsibleCompany" multiple filterable remote reserve-keyword
-                       placeholder="请输入关键词" :remote-method="responsibleCompanyRemote" :loading="responsibleCompanyLoading"
-            >
-              <el-option v-for="item in responsibleCompanyOptions" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="核查终结">
-            <el-switch v-model="queryParams.checkType" />
-          </el-form-item>
-          <el-form-item label="是否集访">
-            <el-switch v-model="queryParams.teamPetitionState" />
-          </el-form-item>
-          <el-form-item label="易化解程度:">
-            <el-select v-model="queryParams.resolveLevel" clearable placeholder="请选择">
-              <el-option v-for="item in resolveLevelOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="信访类型:">
-            <el-select v-model="queryParams.petitionType" clearable placeholder="请选择">
-              <el-option v-for="item in petitionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="目的分类:">
-            <el-select v-model="queryParams.purposeType" clearable placeholder="请选择">
-              <el-option v-for="item in purposeTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="突出信访矛盾类别:">
-            <el-select v-model="queryParams.contradictionType" clearable placeholder="请选择">
-              <el-option v-for="item in contradictionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
-            </el-select>
-          </el-form-item>
-        </el-form>
+        <el-collapse v-model="activeNames">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <el-tag>
+                <i class="el-icon-more" />
+                {{ activeNames.indexOf('1') > -1 ? '收起查询条件' : '展开查询条件' }}
+              </el-tag>
+              <!-- <i :class="activeNames.indexOf('1') > -1 ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" /> -->
+            </template>
+            <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
+              <el-form-item label="姓名：">
+                <el-select v-model="queryParams.applyName" multiple filterable remote reserve-keyword
+                           placeholder="请输入关键词" :remote-method="applyNameRemote" :loading="applyNameLoading" :collapse-tags="true"
+                >
+                  <el-option v-for="item in applyNameOptions" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="性别:">
+                <el-select v-model="queryParams.applySex" clearable placeholder="请选择">
+                  <el-option v-for="item in applySexOptions" :key="item.id" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="责任单位：">
+                <!-- <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" /> -->
+                <el-select v-model="queryParams.responsibleCompany" multiple filterable remote reserve-keyword
+                           placeholder="请输入关键词" :remote-method="responsibleCompanyRemote" :loading="responsibleCompanyLoading"
+                >
+                  <el-option v-for="item in responsibleCompanyOptions" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="核查终结">
+                <el-switch v-model="queryParams.checkType" />
+              </el-form-item>
+              <el-form-item label="是否集访">
+                <el-switch v-model="queryParams.teamPetitionState" />
+              </el-form-item>
+              <el-form-item label="易化解程度:">
+                <el-select v-model="queryParams.resolveLevel" clearable placeholder="请选择">
+                  <el-option v-for="item in resolveLevelOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="信访类型:">
+                <el-select v-model="queryParams.petitionTypes" multiple clearable placeholder="请选择">
+                  <el-option v-for="item in petitionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="目的分类:">
+                <el-select v-model="queryParams.purposeType" clearable placeholder="请选择">
+                  <el-option v-for="item in purposeTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="突出信访矛盾类别:">
+                <el-select v-model="queryParams.contradictionType" clearable placeholder="请选择">
+                  <el-option v-for="item in contradictionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </el-card>
     <el-card class="operate-container" shadow="never">
@@ -166,7 +177,7 @@ const defaultQueryParams = {
   checkType: false,
   teamPetitionState: false,
   resolveLevel: null,
-  petitionType: null,
+  petitionTypes: null,
   purposeType: null,
   contradictionType: null,
   pageObj: {
@@ -197,7 +208,8 @@ export default {
       }, {
         id: '0', label: '女', value: '0'
       }],
-      importExcelAction: ''
+      importExcelAction: '',
+      activeNames: ['1']
     }
   },
   computed: {
@@ -213,7 +225,7 @@ export default {
         checkType,
         teamPetitionState,
         resolveLevel,
-        petitionType,
+        petitionTypes,
         purposeType,
         contradictionType,
         pageObj
@@ -236,8 +248,8 @@ export default {
       if (resolveLevel) {
         paramsTrans.resolveLevel = resolveLevel
       }
-      if (petitionType) {
-        paramsTrans.petitionType = petitionType
+      if (petitionTypes) {
+        paramsTrans.petitionTypes = petitionTypes
       }
       if (purposeType) {
         paramsTrans.purposeType = purposeType

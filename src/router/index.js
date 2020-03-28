@@ -22,33 +22,6 @@ export default new Router({
       meta: { title: '首页', icon: 'home' }
     }]
   }, {
-    path: '/sys',
-    name: 'sys',
-    component: Main,
-    redirect: '/sys/user',
-    meta: { title: '系统管理', icon: 'cooperation' },
-    children: [{
-      path: 'user',
-      name: 'user',
-      component: () => import('@/views/user'),
-      meta: { title: '用户管理', icon: 'cooperation', value: 'user:index' }
-    }, {
-      path: 'role',
-      name: 'role',
-      component: () => import('@/views/role'),
-      meta: { title: '角色管理', icon: 'cooperation', value: 'role:index' }
-    }, {
-      path: 'permission',
-      name: 'permission',
-      component: () => import('@/views/permission'),
-      meta: { title: '菜单管理', icon: 'cooperation', value: 'permission:index' }
-    }, {
-      path: 'list',
-      name: 'list',
-      component: () => import('@/views/list'),
-      meta: { title: '列选管理', icon: 'cooperation', value: 'list:index' }
-    }]
-  }, {
     path: '/petition',
     name: 'petition',
     component: Main,
@@ -58,7 +31,7 @@ export default new Router({
       path: 'company',
       name: 'company',
       component: () => import('@/views/company'),
-      meta: { title: '公司管理', icon: 'cooperation', value: 'company:index' }
+      meta: { title: '企业管理', icon: 'cooperation', value: 'company:index' }
     }, {
       path: 'contradiction',
       name: 'contradiction',
@@ -84,6 +57,43 @@ export default new Router({
       name: 'troubleshoot',
       component: () => import('@/views/troubleshoot'),
       meta: { title: '矛盾排查', icon: 'cooperation', value: 'troubleshoot:index' }
+    }]
+  }, {
+    path: '/sys',
+    name: 'sys',
+    component: Main,
+    redirect: '/sys/user',
+    meta: { title: '系统管理', icon: 'cooperation' },
+    children: [{
+      path: 'user',
+      name: 'user',
+      component: () => import('@/views/user'),
+      meta: { title: '用户管理', icon: 'cooperation', value: 'user:index' }
+    }, {
+      path: 'role',
+      name: 'role',
+      component: () => import('@/views/role'),
+      meta: { title: '角色管理', icon: 'cooperation', value: 'role:index' }
+    }, {
+      path: 'permission',
+      name: 'permission',
+      component: () => import('@/views/permission'),
+      meta: { title: '菜单管理', icon: 'cooperation', value: 'permission:index' }
+    }, {
+      path: 'list',
+      name: 'list',
+      component: () => import('@/views/list'),
+      meta: { title: '列选管理', icon: 'cooperation', value: 'list:index' }
+    }, {
+      path: 'homeSetting',
+      name: 'homeSetting',
+      component: () => import('@/views/display/home'),
+      meta: { title: '公告管理', icon: 'cooperation', value: 'homeSetting:index' }
+    }, {
+      path: 'loginSetting',
+      name: 'loginSetting',
+      component: () => import('@/views/display/login'),
+      meta: { title: '登录页背景', icon: 'cooperation', value: 'loginSetting:index' }
     }]
   }, {
     path: '/login',

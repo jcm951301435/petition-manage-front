@@ -34,7 +34,7 @@
       >
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
-        <el-table-column prop="name" label="菜单名称" width="150" />
+        <el-table-column prop="name" label="菜单名称" width="170" />
         <el-table-column prop="icon" label="图标" width="160" />
         <el-table-column prop="value" label="值" width="160" />
         <!-- <el-table-column prop="uri" label="地址" width="160" /> -->

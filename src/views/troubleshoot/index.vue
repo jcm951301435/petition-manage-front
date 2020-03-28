@@ -31,7 +31,7 @@
     </el-card>
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" />
-      <span>公司列表</span>
+      <span>排查列表</span>
       <el-button :disabled="!$checkMenuShow('troubleshoot:add')" type="primary" class="btn-add" @click="handleAdd()" style="margin-left: 20px">
         添加
       </el-button>
@@ -67,22 +67,22 @@
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column type="index" width="50" />
         <el-table-column prop="companyName" label="归口集团" width="120" />
-        <el-table-column label="群体或个体" width="120">
+        <el-table-column label="群体或个体" width="60">
           <template slot-scope="scope">
             {{ scope.row.teamPetitionState ? '群体' : '单体' }}
           </template>
         </el-table-column>
-        <el-table-column prop="contradictionLevel" label="矛盾级别" width="100" />
-        <el-table-column prop="teamPetitionCount" label="涉及人数" width="100" />
+        <el-table-column prop="contradictionLevel" label="矛盾级别" width="60" />
+        <el-table-column prop="teamPetitionCount" label="涉及人数" width="80" />
         <el-table-column prop="responsibleCompany" label="责任企业" width="160" />
-        <el-table-column prop="content" label="信访主要诉求" width="200" :show-overflow-tooltip="true" />
+        <el-table-column prop="content" label="信访主要诉求" width="200" />
         <el-table-column prop="contradictionType" label="矛盾类型" width="100" />
-        <el-table-column prop="resolveProcess" label="主要措施" width="200" :show-overflow-tooltip="true" />
-        <el-table-column prop="status" label="状态" width="100" />
+        <el-table-column prop="resolveProcess" label="主要措施" width="200" />
+        <el-table-column prop="status" label="状态" width="60" />
         <el-table-column prop="remarks" label="备注" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('troubleshoot:update')" @click="handleUpdate(scope.$index, scope.row)" type="success" size="small">
               修改
