@@ -35,7 +35,6 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="责任单位：">
-                <!-- <el-input v-model="queryParams.responsibleCompany" class="input-width" placeholder="责任单位" /> -->
                 <el-select v-model="queryParams.responsibleCompany" multiple filterable remote reserve-keyword
                            placeholder="请输入关键词" :remote-method="responsibleCompanyRemote" :loading="responsibleCompanyLoading"
                 >
@@ -47,6 +46,9 @@
               </el-form-item>
               <el-form-item label="是否集访">
                 <el-switch v-model="queryParams.teamPetitionState" />
+              </el-form-item>
+              <el-form-item label="是否完结">
+                <el-switch v-model="queryParams.finished" />
               </el-form-item>
               <el-form-item label="易化解程度:">
                 <el-select v-model="queryParams.resolveLevel" clearable placeholder="请选择">
@@ -180,6 +182,7 @@ const defaultQueryParams = {
   petitionTypes: null,
   purposeType: null,
   contradictionType: null,
+  finished: false,
   pageObj: {
     pageNum: 1,
     pageSize: 10
@@ -228,6 +231,7 @@ export default {
         petitionTypes,
         purposeType,
         contradictionType,
+        finished,
         pageObj
       } = this.queryParams
       if (applyName) {
@@ -257,6 +261,9 @@ export default {
       if (contradictionType) {
         paramsTrans.contradictionType = contradictionType
       }
+      if (finished) {
+        paramsTrans.finished = finished
+      }
       const params = {}
       params.pageNum = pageObj.pageNum
       params.pageSize = pageObj.pageSize
@@ -280,6 +287,7 @@ export default {
     this.getListByType('contradictionType').then(response => {
       this.contradictionTypeOptions = response.data.list || []
     })
+    this.responsibleCompanyRemote()
   },
   methods: {
     handleSearchList () {
@@ -402,23 +410,21 @@ export default {
       }
     },
     responsibleCompanyRemote (query) {
-      if (query !== '') {
-        this.responsibleCompanyLoading = true
-        companyApi.fetchList({ name: query }).then(response => {
-          const options = []
-          const list = response.data.list
-          for (var i in list) {
-            options.push({
-              label: list[i].name,
-              value: list[i].id
-            })
-          }
-          this.responsibleCompanyOptions = options
-          this.responsibleCompanyLoading = false
-        }).catch(() => {
-          this.responsibleCompanyLoading = false
-        })
-      }
+      this.responsibleCompanyLoading = true
+      companyApi.fetchList({ name: query }).then(response => {
+        const options = []
+        const list = response.data.list
+        for (var i in list) {
+          options.push({
+            label: list[i].name,
+            value: list[i].id
+          })
+        }
+        this.responsibleCompanyOptions = options
+        this.responsibleCompanyLoading = false
+      }).catch(() => {
+        this.responsibleCompanyLoading = false
+      })
     }
   }
 }

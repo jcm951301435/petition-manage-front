@@ -36,6 +36,11 @@
         <el-table-column prop="description" label="描述" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
+        <el-table-column label="姓名" width="150">
+          <template slot-scope="scope">
+            {{ scope.row.filterData ? '是': '否' }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="250" fixed="right">
           <template slot-scope="scope">
             <el-button :disabled="!$checkMenuShow('role:addPermission')" @click="handlePemissionRelation(scope.$index, scope.row)" type="primary" size="small">
@@ -70,6 +75,9 @@
         </el-form-item>
         <el-form-item label="描述：" prop="description">
           <el-input v-model="roleEdit.description" style="width: 250px" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="数据过滤：" prop="teamPetitionState">
+          <el-switch v-model="roleEdit.filterData" active-text="仅本公司" inactive-text="所有" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -108,6 +116,7 @@ const defaultQueryParams = {
 const defaultRoleEdit = {
   id: '',
   name: '',
+  filterData: false,
   description: ''
 }
 

@@ -83,9 +83,16 @@
                         <el-input v-model="contradictionForm.applyAddress" placeholder="请输入常住地址" clearable :style="{width: '100%'}" />
                       </el-form-item>
                     </el-col>
-                    <el-col :span="4">
+                  </el-row>
+                  <el-row>
+                    <el-col :span="8">
                       <el-form-item label="核查终结" prop="checkType">
                         <el-switch v-model="contradictionForm.checkType" />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-form-item label="涉法诉讼" prop="lawsuit">
+                        <el-switch v-model="contradictionForm.lawsuit" />
                       </el-form-item>
                     </el-col>
                   </el-row>
@@ -296,6 +303,11 @@
                       <el-input v-model="contradictionForm.resolveFormOtherContent" type="textarea" placeholder="请输入其他化解形式"
                                 :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"
                       />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="23">
+                    <el-form-item label="是否完结" prop="finished">
+                      <el-switch v-model="contradictionForm.finished" />
                     </el-form-item>
                   </el-col>
                 </el-card>

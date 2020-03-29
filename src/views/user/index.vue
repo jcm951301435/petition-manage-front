@@ -14,10 +14,15 @@
       <div style="margin-top: 15px">
         <el-form ref="queryForm" :inline="true" :model="queryParams" size="small" label-width="140px">
           <el-form-item label="用户名：">
-            <el-input v-model="queryParams.username" class="input-width" placeholder="用户名" />
+            <el-input v-model="queryParams.username" clearable class="input-width" placeholder="用户名" />
           </el-form-item>
           <el-form-item label="姓名:">
-            <el-input v-model="queryParams.realName" class="input-width" placeholder="姓名" />
+            <el-input v-model="queryParams.realName" clearable class="input-width" placeholder="姓名" />
+          </el-form-item>
+          <el-form-item label="公司：">
+            <el-autocomplete class="inline-input" clearable v-model="queryParams.companyName" value-key="name" :fetch-suggestions="handleQueryCompanySearch"
+                             placeholder="公司"
+            />
           </el-form-item>
           <el-form-item label="创建日期：">
             <el-date-picker v-model="queryParams.insertOnRange" type="datetimerange" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
@@ -83,6 +88,11 @@
             <el-option v-for="item in roleIdOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
+        <el-form-item label="公司：" prop="companyId">
+          <el-select v-model="userEdit.companyId" placeholder="请选择" filterable remote reserve-keyword>
+            <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-show="showEditPassword" label="修改密码">
           <el-switch v-model="editPassword" />
         </el-form-item>
@@ -109,10 +119,12 @@
 <script>
 import userApi from '@/api/user'
 import roleApi from '@/api/role'
+import companyApi from '@/api/company'
 
 const defaultQueryParams = {
   username: '',
   realName: '',
+  companyName: null,
   insertOnRange: ['', ''],
   pageObj: {
     pageNum: 1,
@@ -127,7 +139,8 @@ const defaultUserEdit = {
   roleName: '',
   oldPassword: '',
   password: '',
-  checkPassword: ''
+  checkPassword: '',
+  companyId: null
 }
 
 export default {
@@ -219,7 +232,8 @@ export default {
           validator: validateCheckPassword,
           trigger: 'blur'
         }]
-      }
+      },
+      companyOptions: []
     }
   },
   computed: {
@@ -244,7 +258,7 @@ export default {
     },
     queryParamsTrans () {
       const paramsTrans = {}
-      const { username, realName, insertOnRange, pageObj } = this.queryParams
+      const { username, realName, companyName, insertOnRange, pageObj } = this.queryParams
       var insertOnFrom = ''
       var insertOnTo = ''
       if (insertOnRange) {
@@ -256,6 +270,9 @@ export default {
       }
       if (realName) {
         paramsTrans.realName = realName
+      }
+      if (companyName) {
+        paramsTrans.companyName = companyName
       }
       if (insertOnFrom) {
         paramsTrans.insertOnFrom = insertOnFrom
@@ -271,6 +288,7 @@ export default {
   created () {
     this.getList()
     this.getRoleIdOptions()
+    this.getCompanyList()
   },
   methods: {
     handleSearchList () {
@@ -355,6 +373,17 @@ export default {
     handlePageCurrentChange (val) {
       this.queryParams.pageNum = val
       this.getList()
+    },
+    handleQueryCompanySearch (queryString, callBack) {
+      this.getCompanyList(queryString, callBack)
+    },
+    getCompanyList (queryString, callBack) {
+      companyApi.fetchList({ name: queryString }).then(response => {
+        this.companyOptions = response.data.list
+        if (callBack) {
+          callBack(response.data.list)
+        }
+      })
     }
   }
 }
