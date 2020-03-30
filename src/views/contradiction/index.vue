@@ -48,7 +48,9 @@
                 <el-switch v-model="queryParams.teamPetitionState" />
               </el-form-item>
               <el-form-item label="是否完结">
-                <el-switch v-model="queryParams.finished" />
+                <el-select v-model="queryParams.finished" clearable placeholder="请选择">
+                  <el-option v-for="item in finishedOptions" :key="item.id" :label="item.label" :value="item.value" />
+                </el-select>
               </el-form-item>
               <el-form-item label="易化解程度:">
                 <el-select v-model="queryParams.resolveLevel" clearable placeholder="请选择">
@@ -68,6 +70,11 @@
               <el-form-item label="突出信访矛盾类别:">
                 <el-select v-model="queryParams.contradictionType" clearable placeholder="请选择">
                   <el-option v-for="item in contradictionTypeOptions" :key="item.id" :label="item.listValue" :value="item.listKey" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="涉法诉讼">
+                <el-select v-model="queryParams.lawsuit" clearable placeholder="请选择">
+                  <el-option v-for="item in lawsuitOptions" :key="item.id" :label="item.label" :value="item.value" />
                 </el-select>
               </el-form-item>
             </el-form>
@@ -182,7 +189,8 @@ const defaultQueryParams = {
   petitionTypes: null,
   purposeType: null,
   contradictionType: null,
-  finished: false,
+  finished: null,
+  lawsuit: null,
   pageObj: {
     pageNum: 1,
     pageSize: 10
@@ -212,7 +220,33 @@ export default {
         id: '0', label: '女', value: '0'
       }],
       importExcelAction: '',
-      activeNames: ['1']
+      activeNames: ['1'],
+      finishedOptions: [{
+        id: '全部',
+        label: '全部',
+        value: null
+      }, {
+        id: '是',
+        label: '是',
+        value: true
+      }, {
+        id: '否',
+        label: '否',
+        value: false
+      }],
+      lawsuitOptions: [{
+        id: '全部',
+        label: '全部',
+        value: null
+      }, {
+        id: '是',
+        label: '是',
+        value: true
+      }, {
+        id: '否',
+        label: '否',
+        value: false
+      }]
     }
   },
   computed: {
@@ -232,6 +266,7 @@ export default {
         purposeType,
         contradictionType,
         finished,
+        lawsuit,
         pageObj
       } = this.queryParams
       if (applyName) {
@@ -261,8 +296,11 @@ export default {
       if (contradictionType) {
         paramsTrans.contradictionType = contradictionType
       }
-      if (finished) {
+      if (finished != null) {
         paramsTrans.finished = finished
+      }
+      if (lawsuit != null) {
+        paramsTrans.lawsuit = lawsuit
       }
       const params = {}
       params.pageNum = pageObj.pageNum

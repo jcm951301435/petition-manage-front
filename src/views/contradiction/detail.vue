@@ -227,6 +227,26 @@
                   </el-row>
                   <el-row>
                     <el-col :span="23">
+                      <el-button type="success" @click.prevent="addContradictionResolveReason()">
+                        新增未化解原因
+                      </el-button>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="23">
+                      <el-form-item v-for="(item, index) in contradictionForm.contradictionResolveReason" :key="index" label-width="120px" :label="'未化解原因' + (index < 1 ? '' : index)">
+                        <el-input v-model="contradictionForm.contradictionResolveReason[index].reason"
+                                  type="textarea" placeholder="请输入未化解原因" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '80%'}"
+                        />
+                        <el-button v-show="index > 0" type="danger" @click.prevent="removeContradictionResolveReason(item, index)">
+                          删除
+                        </el-button>
+                      </el-form-item>
+                      <el-divider />
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="23">
                       <el-button type="success" @click.prevent="addContradictionResolveProcess()">
                         新增化解过程
                       </el-button>
@@ -341,7 +361,8 @@ const defaultContradictionForm = {
   petitionTypes: [],
   resolveForms: [],
   contradictionContent: [],
-  contradictionResolveProcess: []
+  contradictionResolveProcess: [],
+  contradictionResolveReason: []
 }
 
 export default {
@@ -513,6 +534,17 @@ export default {
     removeContradictionResolveProcess (item, index) {
       if (index !== -1) {
         this.contradictionForm.contradictionResolveProcess.splice(index, 1)
+      }
+    },
+    addContradictionResolveReason () {
+      this.contradictionForm.contradictionResolveReason.push({
+        id: '',
+        reason: ''
+      })
+    },
+    removeContradictionResolveReason (item, index) {
+      if (index !== -1) {
+        this.contradictionForm.contradictionResolveReason.splice(index, 1)
       }
     },
     fileListBeforeUpload (file) {
