@@ -36,7 +36,7 @@
         <el-table-column prop="description" label="描述" width="160" />
         <el-table-column prop="insertOn" label="创建日期" width="160" />
         <el-table-column prop="insertByName" label="创建人" width="160" />
-        <el-table-column label="姓名" width="150">
+        <el-table-column label="是否过滤" width="150">
           <template slot-scope="scope">
             {{ scope.row.filterData ? '是': '否' }}
           </template>
